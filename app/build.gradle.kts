@@ -16,10 +16,14 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.vcco.weather.di.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "BASE_URL", "\"${project.properties["base_url"]}\"")
+        buildConfigField("String", "API_KEY", "\"${project.properties["api_key"]}\"")
+        buildConfigField("String", "PREFERENCE_FILE", "\"${project.properties["prefence_file"]}\"")
     }
 
     buildTypes {
@@ -117,6 +121,9 @@ dependencies {
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.navigation.support.fragments)
 
+    //HiltTesting
+    androidTestImplementation(libs.dagger.hilt.test)
+    kaptAndroidTest(libs.dagger.hilt.compilation)
 
     //Testing
     testImplementation(libs.junit)
@@ -128,6 +135,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     testImplementation(libs.mockito.inline)
     testImplementation(libs.mockito.android)
+    androidTestImplementation(libs.mockito.android)
     testImplementation(libs.androidx.test)
     androidTestImplementation(libs.androidx.arch.core)
 }

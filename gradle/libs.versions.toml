@@ -52,27 +52,29 @@ okHttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHtt
 okHttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttpVersion" }
 dagger-hilt-compilation = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltVersion" }
 dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
+dagger-hilt-test = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hiltVersion" }
 rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxJavaVersion" }
 rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rxJavaVersion" }
 androidx-lifecycle-reactive-streams = { group = "androidx.lifecycle", name = "lifecycle-reactivestreams", version.ref = "lifecycleRuntimeKtx" }
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidexVersion" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutinesVersion" }
-mockito-inline= { group = "org.mockito", name = "mockito-inline", version.ref = "mockitoInlineVersion" }
-mockito-android = {group = "org.mockito", name="mockito-android", version.ref = "mockitoKotlinVersion"}
-androidx-test = {group = "androidx.test", name="core", version.ref = "androidTestCore"}
+mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockitoInlineVersion" }
+mockito-android = { group = "org.mockito", name = "mockito-android", version.ref = "mockitoKotlinVersion" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoKotlinVersion" }
+androidx-test = { group = "androidx.test", name = "core", version.ref = "androidTestCore" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationVersion" }
 androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationVersion" }
 androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationVersion" }
 androidx-navigation-support-fragments = { group = "androidx.navigation", name = "navigation-dynamic-features-fragment", version.ref = "navigationVersion" }
 androidx-navigation-safeargs = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigationVersion" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
-androidx-datasource-preferences = {group = "androidx.datastore", name="datastore-preferences", version.ref = "dataSourceVersion"}
+androidx-datasource-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataSourceVersion" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
-androidx-arch-core ={group= "androidx.arch.core", name = "core-testing", version.ref="archCoreTesting"}
+androidx-arch-core = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCoreTesting" }
 androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-hilt-android = {id = "com.google.dagger.hilt.android", version.ref = "hiltVersion"}
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
