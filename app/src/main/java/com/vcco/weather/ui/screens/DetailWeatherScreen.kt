@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -81,6 +82,7 @@ fun DetailScreenLoading(
         CircularProgressIndicator(
             modifier = Modifier
                 .size(dimensionResource(R.dimen.size_128dp))
+                .testTag(stringResource(R.string.test_tag_loading))
                 .align(Alignment.Center),
             color = MaterialTheme.colorScheme.secondary,
             trackColor = MaterialTheme.colorScheme.surfaceVariant,

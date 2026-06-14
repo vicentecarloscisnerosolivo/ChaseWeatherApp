@@ -26,7 +26,7 @@ sealed interface HomeAppUiState {
     ) : HomeAppUiState
 
     /**
-     * Used when there is not Data to show
+     * Used when there is no Data to show
      */
     object FirstRun : HomeAppUiState
 }

@@ -2,29 +2,19 @@ package com.vcco.weather.repository
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vcco.weather.model.geoconfig.GeocodeResponse
-import com.vcco.weather.model.weather.Clouds
-import com.vcco.weather.model.weather.Conditions
-import com.vcco.weather.model.weather.Coordinates
 import com.vcco.weather.model.weather.CurrentWeatherResponse
-import com.vcco.weather.model.weather.Rain
-import com.vcco.weather.model.weather.Snow
-import com.vcco.weather.model.weather.SunTime
-import com.vcco.weather.model.weather.Temperature
-import com.vcco.weather.model.weather.Wind
 import com.vcco.weather.model.zip.ZipResponse
 import com.vcco.weather.network.apiHelper.OpenWeatherApiHelper
 import com.vcco.weather.network.apiHelper.OpenWeatherApiHelperImp
 import com.vcco.weather.network.repository.OpenWeatherRepository
 import com.vcco.weather.network.service.OpenWeatherService
+import com.vcco.weather.repository.responses.OpenWeatherServiceResponses
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.observers.TestObserver
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody
-import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -52,14 +42,6 @@ class OpenWeatherRepositoryTest {
     private lateinit var apiHelper: OpenWeatherApiHelper
     private lateinit var repository: OpenWeatherRepository
 
-    // models response
-    private lateinit var currentResponse: CurrentWeatherResponse
-    private lateinit var currentLocationResponse: List<GeocodeResponse>
-    private lateinit var zipResponse: ZipResponse
-
-    //error response
-    private lateinit var errorJson: String
-    private lateinit var responseErrorBody: ResponseBody
 
     @Before
     fun setUp() {
@@ -67,68 +49,11 @@ class OpenWeatherRepositoryTest {
         hiltRule.inject()
         apiHelper = OpenWeatherApiHelperImp(service)
         repository = OpenWeatherRepository(apiHelper)
-
-        currentResponse = CurrentWeatherResponse(
-            coordinates = Coordinates(
-                longitude = -96.9489f,
-                latitude = 32.814f
-            ),
-            conditions = listOf(
-                Conditions(
-                    id = 1,
-                    condition = "clear",
-                    description = "clear",
-                    icon = "01d"
-                )
-            ),
-            temperature = Temperature(
-                temperature = 90f,
-                feelsLike = 92f,
-                minTemperature = 68f,
-                maxTemperature = 95f,
-                humidity = 60
-            ),
-            visibility = 10000,
-            wind = Wind(
-                speed = 12.4f,
-                direction = 2
-            ),
-            clouds = Clouds(coverage = 10),
-            rain = Rain(
-                amount = 2.5f
-            ),
-            snow = Snow(
-                amount = 2.5f
-            ),
-            dataCalculation = 1781378046,
-            sunTime = SunTime(
-                country = "US",
-                sunRiseTimestamp = 1727353131,
-                sunSetTimestamp = 1727396337
-            ),
-            timeZone = -18000,
-            id = 4700168,
-            name = "Irving"
-        )
-        currentLocationResponse = listOf(
-            GeocodeResponse(
-                longitude = -96.9489f, latitude = 32.814f, name = "Irving",
-                localNames = mapOf("Guadalajara" to "en"), country = "US", state = "Texas"
-            )
-        )
-        zipResponse = ZipResponse(
-            zipCode = "75039",
-            name = "Irving",
-            longitude = -96.9489f,
-            latitude = 32.814f,
-            country = "US"
-        )
-        errorJson = """{"code": "404", "message": "not found"}"""
-        responseErrorBody = errorJson.toResponseBody("application/json".toMediaTypeOrNull())
     }
 
     @Test
     fun useGeCurrentWeatherRepositorySuccess() {
+        val currentResponse = OpenWeatherServiceResponses.getCurrentWeatherResponseCorrect()
         runBlocking {
             Mockito.`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
                 .thenReturn(Observable.just(Response.success(currentResponse)))
@@ -144,6 +69,8 @@ class OpenWeatherRepositoryTest {
 
     @Test
     fun userGetInfoFromLocation() {
+        val currentLocationResponse =
+            OpenWeatherServiceResponses.getCurrentLocationSuccessResponses()
         Mockito.`when`(service.getReverseLocation(anyFloat(), anyFloat(), anyString()))
             .thenReturn(Observable.just(Response.success(currentLocationResponse)))
 
@@ -157,6 +84,7 @@ class OpenWeatherRepositoryTest {
 
     @Test
     fun userGetZipCodeResponse() {
+        val zipResponse = OpenWeatherServiceResponses.getZipResponse()
         Mockito.`when`(service.getInfoFromZipCode(anyString(), anyString()))
             .thenReturn(Observable.just(Response.success(zipResponse)))
 
@@ -171,6 +99,8 @@ class OpenWeatherRepositoryTest {
 
     @Test
     fun userGetCityNamesResponse() {
+        val currentLocationResponse =
+            OpenWeatherServiceResponses.getCurrentLocationSuccessResponses()
         Mockito.`when`(service.getInfoWithLocationName(anyString(), anyString()))
             .thenReturn(Observable.just(Response.success(currentLocationResponse)))
 
@@ -184,6 +114,7 @@ class OpenWeatherRepositoryTest {
 
     @Test
     fun useGeCurrentWeatherRepositoryError() {
+        val responseErrorBody = OpenWeatherServiceResponses.getResponseErrorBody()
         runBlocking {
             Mockito.`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
                 .thenReturn(
@@ -215,6 +146,7 @@ class OpenWeatherRepositoryTest {
 
     @Test
     fun userGetZipCodeResponseError() {
+        val responseErrorBody = OpenWeatherServiceResponses.getResponseErrorBody()
         Mockito.`when`(service.getInfoFromZipCode(anyString(), anyString()))
             .thenReturn(Observable.just(Response.error(404, responseErrorBody)))
 
