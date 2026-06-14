@@ -1,3 +1,61 @@
 <resources>
     <string name="app_name">ChaseWeatherApp</string>
+
+    <!-- Toolbar -->
+    <string name="home_screen">Weather</string>
+    <string name="detail_screen">Detail</string>
+    <string name="back_button">Back</string>
+    <string name="last_search_screen">Last Search</string>
+
+    <!-- Toast bar settings -->
+    <string name="toast_location_permission_should_request">Should give access to the
+    location permissions to unlock all the features</string>
+
+    <!-- Home Screen Values -->
+    <string name="button_search_current_location">Search weather with current location</string>
+    <string name="label_search_city">Type City or Zip Code</string>
+    <string name="button_show_last_search">Show last search</string>
+    <string name="button_search">Search</string>
+    <string name="label_select_unit">Select units</string>
+    <string name="format_string_for_city_query">%s, %s, %s</string>
+
+    <!-- Detail Weather Screen Values -->
+    <string name="label_current_temperature">Current Temperature</string>
+    <string name="label_current_temperature_format"> %d°</string>
+    <string name="label_temperature_real_feel">Feels like: %d°</string>
+    <string name="label_temperature_min">Min: %d°</string>
+    <string name="label_temperature_max">Max: %d°</string>
+    <string name="label_current_humidity">Humidity: %d\%%</string>
+    <string name="label_cloud_coverage">Cloud Coverage: %d\%%</string>
+    <string name="label_current_no_precipitations">No precipitations expected in the next 60 minutes</string>
+    <string name="label_current_rain_expected">Expected rain %.2fmm in the next 60 minutes</string>
+    <string name="label_current_snow_expected">Expected snow %.2fmm in the next 60 minutes\%%</string>
+    <string name="label_current_wind">Wind Conditions</string>
+    <string name="label_current_wind_speed">Speed: %.2f</string>
+    <string name="label_current_wind_north">Direction North</string>
+    <string name="label_current_wind_north_east">Direction North East</string>
+    <string name="label_current_wind_north_west">Direction North West</string>
+    <string name="label_current_wind_south">Direction South</string>
+    <string name="label_current_wind_south_east">Direction South East</string>
+    <string name="label_current_wind_south_west">Direction South West</string>
+    <string name="label_current_wind_east">Direction East</string>
+    <string name="label_current_wind_west">Direction West</string>
+    <string name="label_today_sunrise">Sunrise %s</string>
+    <string name="label_today_sunset">Sunset %s</string>
+    <string name="label_data_search_date">Searched time %s</string>
+    <string name="label_data_last_search_info">Note: This info is from the Last Search, click on back button to go back main Screen</string>
+    <string name="label_data_last_search_button">Go Home Screen</string>
+
+
+    <!-- Error handle -->
+    <string name="error_server_error">Error on server side, please try in other moment</string>
+    <string name="error_not_found_location">Sorry, we did not find the location, please
+    modify the search using Zip Code with country name or City name with state and country</string>
+    <string name="error_no_internet_connection">No internet connection, please try to turn on network connections</string>
+
+    <!-- Radio Button Options List -->
+    <string-array name="units_option">
+        <item>Imperial</item>>
+        <item>Metric</item>
+    </string-array>
 </resources>

@@ -69,16 +69,43 @@ class OpenWeatherRepositoryTest {
         repository = OpenWeatherRepository(apiHelper)
 
         currentResponse = CurrentWeatherResponse(
-            coordinates = Coordinates(longitude = -96.9489f, latitude = 32.814f),
-            conditions = listOf(Conditions(1, "clear", "clear", "01d")),
-            temperature = Temperature(30.0f, 31.1f, 20.0f, 32.0f, 60),
+            coordinates = Coordinates(
+                longitude = -96.9489f,
+                latitude = 32.814f
+            ),
+            conditions = listOf(
+                Conditions(
+                    id = 1,
+                    condition = "clear",
+                    description = "clear",
+                    icon = "01d"
+                )
+            ),
+            temperature = Temperature(
+                temperature = 90f,
+                feelsLike = 92f,
+                minTemperature = 68f,
+                maxTemperature = 95f,
+                humidity = 60
+            ),
             visibility = 10000,
-            wind = Wind(12.4f, 2),
-            clouds = Clouds(10),
-            rain = Rain(2.5f),
-            snow = Snow(2.5f),
-            dataCalculation = 1727377390,
-            sunTime = SunTime("US", 1727353131, 1727396337),
+            wind = Wind(
+                speed = 12.4f,
+                direction = 2
+            ),
+            clouds = Clouds(coverage = 10),
+            rain = Rain(
+                amount = 2.5f
+            ),
+            snow = Snow(
+                amount = 2.5f
+            ),
+            dataCalculation = 1781378046,
+            sunTime = SunTime(
+                country = "US",
+                sunRiseTimestamp = 1727353131,
+                sunSetTimestamp = 1727396337
+            ),
             timeZone = -18000,
             id = 4700168,
             name = "Irving"
