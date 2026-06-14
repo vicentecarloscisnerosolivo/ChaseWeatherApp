@@ -20,6 +20,7 @@
     <string name="format_string_for_city_query">%s, %s, %s</string>
 
     <!-- Detail Weather Screen Values -->
+    <string name="test_tag_loading">Loading Info</string>
     <string name="label_current_temperature">Current Temperature</string>
     <string name="label_current_temperature_format"> %d°</string>
     <string name="label_temperature_real_feel">Feels like: %d°</string>
