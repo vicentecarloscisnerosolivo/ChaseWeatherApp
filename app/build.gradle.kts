@@ -1,23 +1,29 @@
 plugins {
+    kotlin("kapt")
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
     namespace = "com.vcco.weather"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.vcco.weather"
-        minSdk = 24
-        targetSdk = 36
+        minSdk = 26
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.vcco.weather.di.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "BASE_URL", "\"${project.properties["base_url"]}\"")
+        buildConfigField("String", "API_KEY", "\"${project.properties["api_key"]}\"")
+        buildConfigField("String", "PREFERENCE_FILE", "\"${project.properties["prefence_file"]}\"")
     }
 
     buildTypes {
@@ -41,7 +47,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
     packaging {
         resources {
@@ -53,20 +59,87 @@ android {
     }
 }
 
+
 dependencies {
+    //Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    //Android Coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
+    //UI
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+
+    //viewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    //retrofit
+    implementation(libs.retrofit)
+
+    //Gson
+    implementation(libs.gson)
+    implementation(libs.gson.converter)
+
+    //OkHTTP
+    implementation(libs.okHttp)
+    implementation(libs.okHttp.logging.interceptor)
+
+
+    //RXJava
+    implementation(libs.rxjava)
+    implementation(libs.rxjava.adapter)
+
+    //RXAndroid
+    implementation(libs.rxandroid)
+
+    //Streams
+    implementation(libs.androidx.lifecycle.reactive.streams)
+
+    //Multidex
+    implementation(libs.androidx.multidex)
+
+    //Hilt
+    implementation(libs.dagger.hilt)
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.runtime.livedata)
+    kapt(libs.dagger.hilt.compilation)
+
+    //Location
+    implementation(libs.play.services.location)
+
+    //Data Source
+    implementation(libs.androidx.datasource.preferences)
+
+    //Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.navigation.support.fragments)
+
+    //HiltTesting
+    androidTestImplementation(libs.dagger.hilt.test)
+    kaptAndroidTest(libs.dagger.hilt.compilation)
+
+    //Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.android)
+    androidTestImplementation(libs.mockito.android)
+    testImplementation(libs.androidx.test)
+    androidTestImplementation(libs.androidx.arch.core)
+}
+
+kapt{
+    correctErrorTypes = true
 }
