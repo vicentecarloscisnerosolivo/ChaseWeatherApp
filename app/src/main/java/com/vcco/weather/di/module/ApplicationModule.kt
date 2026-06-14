@@ -1,10 +1,13 @@
 package com.vcco.weather.di.module
 
+import android.content.Context
 import com.vcco.weather.BuildConfig
+import com.vcco.weather.data.Preference
 import com.vcco.weather.network.service.OpenWeatherService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -56,4 +59,17 @@ object ApplicationModule {
     @Singleton
     fun provideOpenWeatherService(retrofit: Retrofit) =
         retrofit.create(OpenWeatherService::class.java)
+
+
+    /**
+     * Provide object from Prefence to use Shared Preference
+     *
+     * Singleton
+     */
+    @Provides
+    @Singleton
+    fun providePreference(@ApplicationContext context: Context) =
+        Preference(context)
+
+
 }
