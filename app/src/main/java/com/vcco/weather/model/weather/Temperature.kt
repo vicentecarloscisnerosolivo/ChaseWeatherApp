@@ -24,5 +24,5 @@ data class Temperature(
     val minTemperature: Float,
     @SerializedName(Constants.CURRENT_MAX_TEMPERATURE_RESPONSE)
     val maxTemperature: Float,
-    val humidity: Int
+    val humidity: Int,
 )

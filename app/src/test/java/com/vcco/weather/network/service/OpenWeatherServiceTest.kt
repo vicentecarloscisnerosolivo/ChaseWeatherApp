@@ -11,7 +11,6 @@ import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
-
 class OpenWeatherServiceTest {
     @Mock
     lateinit var service: OpenWeatherService
@@ -24,7 +23,8 @@ class OpenWeatherServiceTest {
     @Test
     fun getCurrentWeatherServicesSuccess() {
         val mockResponse = OpenWeatherServiceResponses.getCurrentWeatherResponseCorrect()
-        Mockito.`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
+        Mockito
+            .`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
             .thenReturn(Observable.just(Response.success(mockResponse)))
 
         val response = service.getCurrentWeather("HomeTown", "1234", "metric")
@@ -32,15 +32,15 @@ class OpenWeatherServiceTest {
         testObserver.assertComplete()
         testObserver.assertNoErrors()
         testObserver.assertValue { it.body()?.temperature == mockResponse.temperature }
-
     }
 
     @Test
     fun getCurrentWeatherServicesError() {
         val mockErrorResponse = OpenWeatherServiceResponses.getResponseErrorBody()
-        Mockito.`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
+        Mockito
+            .`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
             .thenReturn(
-                Observable.just(Response.error(404, mockErrorResponse))
+                Observable.just(Response.error(404, mockErrorResponse)),
             )
 
         val response = service.getCurrentWeather("HomeTown", "1234", "metric")
@@ -50,14 +50,13 @@ class OpenWeatherServiceTest {
         testObserver.assertValue { it.code() == 404 }
         testObserver.assertValue { it.errorBody() == mockErrorResponse }
         testObserver.assertNoErrors()
-
     }
-
 
     @Test
     fun getInfoFromLocationSuccess() {
         val mockResult = OpenWeatherServiceResponses.getCurrentLocationSuccessResponses()
-        Mockito.`when`(service.getReverseLocation(anyFloat(), anyFloat(), anyString()))
+        Mockito
+            .`when`(service.getReverseLocation(anyFloat(), anyFloat(), anyString()))
             .thenReturn(Observable.just(Response.success(mockResult)))
 
         val response = service.getReverseLocation(32.814f, -96.9489f, "1234")
@@ -69,7 +68,8 @@ class OpenWeatherServiceTest {
 
     @Test
     fun getInfoFromLocationError() {
-        Mockito.`when`(service.getReverseLocation(anyFloat(), anyFloat(), anyString()))
+        Mockito
+            .`when`(service.getReverseLocation(anyFloat(), anyFloat(), anyString()))
             .thenReturn(Observable.just(Response.success(emptyList())))
 
         val response = service.getReverseLocation(32.814f, -96.9489f, "1234")
@@ -83,7 +83,8 @@ class OpenWeatherServiceTest {
     @Test
     fun getZipCodeResponse() {
         val mockResponse = OpenWeatherServiceResponses.getZipResponse()
-        Mockito.`when`(service.getInfoFromZipCode(anyString(), anyString()))
+        Mockito
+            .`when`(service.getInfoFromZipCode(anyString(), anyString()))
             .thenReturn(Observable.just(Response.success(mockResponse)))
 
         val response = service.getInfoFromZipCode("75039", "1234")
@@ -97,7 +98,8 @@ class OpenWeatherServiceTest {
     @Test
     fun getZipCodeResponseError() {
         val mockErrorResponse = OpenWeatherServiceResponses.getResponseErrorBody()
-        Mockito.`when`(service.getInfoFromZipCode(anyString(), anyString()))
+        Mockito
+            .`when`(service.getInfoFromZipCode(anyString(), anyString()))
             .thenReturn(Observable.just(Response.error(404, mockErrorResponse)))
 
         val response = service.getInfoFromZipCode("75039", "1234")
@@ -111,7 +113,8 @@ class OpenWeatherServiceTest {
     @Test
     fun getCityNamesResponse() {
         val mockResponse = OpenWeatherServiceResponses.getCurrentLocationSuccessResponses()
-        Mockito.`when`(service.getInfoWithLocationName(anyString(), anyString()))
+        Mockito
+            .`when`(service.getInfoWithLocationName(anyString(), anyString()))
             .thenReturn(Observable.just(Response.success(mockResponse)))
 
         val response = service.getInfoWithLocationName("Irving", "1234")
@@ -123,7 +126,8 @@ class OpenWeatherServiceTest {
 
     @Test
     fun getCityNamesResponseError() {
-        Mockito.`when`(service.getInfoWithLocationName(anyString(), anyString()))
+        Mockito
+            .`when`(service.getInfoWithLocationName(anyString(), anyString()))
             .thenReturn(Observable.just(Response.success(emptyList())))
 
         val response = service.getInfoWithLocationName("Irving", "1234")
@@ -132,5 +136,4 @@ class OpenWeatherServiceTest {
         testObserver.assertValue { it?.body()?.isEmpty() == true }
         testObserver.assertNoErrors()
     }
-
 }

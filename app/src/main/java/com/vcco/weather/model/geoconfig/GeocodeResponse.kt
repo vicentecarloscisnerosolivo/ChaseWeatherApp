@@ -15,5 +15,5 @@ data class GeocodeResponse(
     @SerializedName(Constants.COUNTRY_RESPONSE)
     val country: String? = null,
     @SerializedName(Constants.GEOCODE_STATE_RESPONSE)
-    val state: String? = null
+    val state: String? = null,
 )

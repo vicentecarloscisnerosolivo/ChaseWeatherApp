@@ -18,19 +18,16 @@ import com.vcco.weather.navigation.WeatherScreen
 /**
  * Toolbar for the different screens for the navigation and show back button
  * if is possible
+ * File used to keep code clean, normally on XML used XML view for Toolbar
+ * keep same practice for compose
  */
-/*
-* File used to keep code clean, normally on XML used XML view for Toolbar
-* keep same practice for compose
-* */
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherAppToolBar(
     currentScreen: WeatherScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     CenterAlignedTopAppBar(
         title = { Text(stringResource(currentScreen.screenTitle)) },
@@ -40,13 +37,14 @@ fun WeatherAppToolBar(
                 IconButton(onClick = navigateUp) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back_button)
+                        contentDescription = stringResource(R.string.back_button),
                     )
                 }
             }
         },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+        colors =
+            TopAppBarDefaults.mediumTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
     )
 }

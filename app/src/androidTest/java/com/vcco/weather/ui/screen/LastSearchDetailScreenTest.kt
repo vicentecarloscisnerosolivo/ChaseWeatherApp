@@ -22,20 +22,22 @@ class LastSearchDetailScreenTest {
         composeTestRule.setContent {
             LastSearchDetailScreen(
                 lastWeatherResponse = currentWeather,
-                onBackClicked = {}
+                onBackClicked = {},
             )
-            currentTemperature = stringResource(
-                R.string.label_current_temperature_format,
-                currentWeather.temperature.temperature.toInt()
-            )
+            currentTemperature =
+                stringResource(
+                    R.string.label_current_temperature_format,
+                    currentWeather.temperature.temperature.toInt(),
+                )
             note = stringResource(R.string.label_data_last_search_info)
         }
 
-        composeTestRule.onNodeWithText(currentTemperature)
+        composeTestRule
+            .onNodeWithText(currentTemperature)
             .assertExists()
 
-        composeTestRule.onNodeWithText(note)
+        composeTestRule
+            .onNodeWithText(note)
             .assertExists()
-
     }
 }

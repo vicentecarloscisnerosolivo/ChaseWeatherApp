@@ -10,5 +10,5 @@ data class Coordinates(
     @SerializedName(Constants.LONGITUDE_RESPONSE)
     val longitude: Float,
     @SerializedName(Constants.LATITUDE_RESPONSE)
-    val latitude: Float
+    val latitude: Float,
 )

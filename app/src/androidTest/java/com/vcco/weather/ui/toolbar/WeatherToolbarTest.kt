@@ -8,17 +8,16 @@ import org.junit.Rule
 import org.junit.Test
 
 class WeatherToolbarTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
-    fun TopAppBastTestHome() {
+    fun topAppBastTestHome() {
         composeTestRule.setContent {
             WeatherAppToolBar(
                 currentScreen = WeatherScreen.Home,
                 canNavigateBack = false,
-                navigateUp = {}
+                navigateUp = {},
             )
         }
         composeTestRule
@@ -27,12 +26,12 @@ class WeatherToolbarTest {
     }
 
     @Test
-    fun TopAppBastTestDetailScreen() {
+    fun topAppBastTestDetailScreen() {
         composeTestRule.setContent {
             WeatherAppToolBar(
                 currentScreen = WeatherScreen.Detail,
                 canNavigateBack = true,
-                navigateUp = {}
+                navigateUp = {},
             )
         }
         composeTestRule
@@ -45,12 +44,12 @@ class WeatherToolbarTest {
     }
 
     @Test
-    fun TopAppBastTestLastSearchScreen() {
+    fun topAppBastTestLastSearchScreen() {
         composeTestRule.setContent {
             WeatherAppToolBar(
                 currentScreen = WeatherScreen.LastSearch,
                 canNavigateBack = true,
-                navigateUp = {}
+                navigateUp = {},
             )
         }
         composeTestRule

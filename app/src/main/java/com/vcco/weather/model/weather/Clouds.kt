@@ -8,5 +8,5 @@ import com.vcco.weather.model.utils.ModelConstants as Constants
  */
 data class Clouds(
     @SerializedName(Constants.CLOUD_COVERAGE_RESPONSE)
-    val coverage: Int
+    val coverage: Int,
 )

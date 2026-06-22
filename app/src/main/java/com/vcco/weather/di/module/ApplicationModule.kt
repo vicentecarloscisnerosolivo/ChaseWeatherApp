@@ -19,7 +19,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ApplicationModule {
-
     /**
      * Provides unique instance of OKHttp logger Interceptor to trace network calls
      *
@@ -30,7 +29,8 @@ object ApplicationModule {
     fun provideOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        return OkHttpClient.Builder()
+        return OkHttpClient
+            .Builder()
             .addInterceptor(loggingInterceptor)
             .build()
     }
@@ -43,7 +43,8 @@ object ApplicationModule {
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
-        Retrofit.Builder()
+        Retrofit
+            .Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .baseUrl(BuildConfig.BASE_URL)
@@ -57,9 +58,7 @@ object ApplicationModule {
      */
     @Provides
     @Singleton
-    fun provideOpenWeatherService(retrofit: Retrofit) =
-        retrofit.create(OpenWeatherService::class.java)
-
+    fun provideOpenWeatherService(retrofit: Retrofit) = retrofit.create(OpenWeatherService::class.java)
 
     /**
      * Provide object from Prefence to use Shared Preference
@@ -68,8 +67,8 @@ object ApplicationModule {
      */
     @Provides
     @Singleton
-    fun providePreference(@ApplicationContext context: Context) =
-        Preference(context)
-
-
+    fun providePreference(
+        @ApplicationContext
+        context: Context,
+    ) = Preference(context)
 }

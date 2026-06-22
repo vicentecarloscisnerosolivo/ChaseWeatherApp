@@ -11,10 +11,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.vcco.weather.R
 import com.vcco.weather.ui.state.HomeAppUiState
 import com.vcco.weather.ui.state.HomeUiState
-import kotlin.collections.indexOf
 
 /**
  * Home screen view receiving the [onSearchWeatherCurrentLocationClicked] for use
@@ -53,26 +52,27 @@ fun HomeScreen(
     onSearchWeatherCurrentLocationClicked: () -> Unit,
     onLastWeatherSearchClicked: () -> Unit,
     onUnitSelectionChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
     when (homeUiState.homeAppUiState) {
-        is HomeAppUiState.NetworkError -> HomeScreenErrorView(
-            errorMessage = homeUiState.homeAppUiState.error,
-            unitPreference = homeUiState.units,
-            onUnitSelectionChanged = onUnitSelectionChanged,
-            modifier = modifier
-        )
+        is HomeAppUiState.NetworkError ->
+            HomeScreenErrorView(
+                errorMessage = homeUiState.homeAppUiState.error,
+                unitPreference = homeUiState.units,
+                onUnitSelectionChanged = onUnitSelectionChanged,
+                modifier = modifier,
+            )
 
-        is HomeAppUiState.FirstRun -> HomeScreenView(
-            canShowLastSearchButton = false,
-            unitPreference = homeUiState.units,
-            onSearchWeatherCLicked = onSearchWeatherCLicked,
-            onSearchWeatherCurrentLocationClicked = onSearchWeatherCurrentLocationClicked,
-            onLastWeatherSearchClicked = onLastWeatherSearchClicked,
-            onUnitSelectionChanged = onUnitSelectionChanged,
-            modifier = modifier
-        )
+        is HomeAppUiState.FirstRun ->
+            HomeScreenView(
+                canShowLastSearchButton = false,
+                unitPreference = homeUiState.units,
+                onSearchWeatherCLicked = onSearchWeatherCLicked,
+                onSearchWeatherCurrentLocationClicked = onSearchWeatherCurrentLocationClicked,
+                onLastWeatherSearchClicked = onLastWeatherSearchClicked,
+                onUnitSelectionChanged = onUnitSelectionChanged,
+                modifier = modifier,
+            )
 
         is HomeAppUiState.LastWeather -> {
             if (homeUiState.isFromInit) {
@@ -85,12 +85,11 @@ fun HomeScreen(
                     onSearchWeatherCurrentLocationClicked = onSearchWeatherCurrentLocationClicked,
                     onLastWeatherSearchClicked = onLastWeatherSearchClicked,
                     onUnitSelectionChanged = onUnitSelectionChanged,
-                    modifier = modifier
+                    modifier = modifier,
                 )
             }
         }
     }
-
 }
 
 /**
@@ -105,7 +104,7 @@ fun HomeScreenView(
     onSearchWeatherCurrentLocationClicked: () -> Unit,
     onLastWeatherSearchClicked: () -> Unit,
     onUnitSelectionChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var locationSearch by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -114,62 +113,67 @@ fun HomeScreenView(
             if (isGranted) {
                 onSearchWeatherCurrentLocationClicked()
             } else {
-
-                Toast.makeText(
-                    context,
-                    R.string.toast_location_permission_should_request,
-                    Toast.LENGTH_SHORT
-                ).show()
-                val intent = Intent(
-                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.fromParts("package", context.packageName, null)
-                )
+                Toast
+                    .makeText(
+                        context,
+                        R.string.toast_location_permission_should_request,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                val intent =
+                    Intent(
+                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.fromParts("package", context.packageName, null),
+                    )
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }
         }
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         Column(
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.padding_8dp)),
-            verticalArrangement = Arrangement.Top
-
+            modifier =
+                Modifier
+                    .padding(dimensionResource(R.dimen.padding_8dp)),
+            verticalArrangement = Arrangement.Top,
         ) {
             OutlinedTextField(
                 value = locationSearch,
                 onValueChange = { locationSearch = it },
                 placeholder = { Text(stringResource(R.string.label_search_city)) },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(dimensionResource(R.dimen.padding_8dp))
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(dimensionResource(R.dimen.padding_8dp))
+                        .fillMaxWidth(),
             )
 
             Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_8dp)),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_8dp)),
                 onClick = {
                     if (locationSearch.isNotBlank()) {
                         onSearchWeatherCLicked(locationSearch)
                     } else {
-                        Toast.makeText(
-                            context,
-                            R.string.label_search_city,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast
+                            .makeText(
+                                context,
+                                R.string.label_search_city,
+                                Toast.LENGTH_SHORT,
+                            ).show()
                     }
-                }
+                },
             ) {
                 Text(stringResource(R.string.button_search))
             }
 
             Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_8dp)),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_8dp)),
                 onClick = {
                     if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
                         PackageManager.PERMISSION_GRANTED
@@ -178,19 +182,20 @@ fun HomeScreenView(
                     } else {
                         permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                     }
-                }
+                },
             ) {
                 Text(stringResource(R.string.button_search_current_location))
             }
 
             if (canShowLastSearchButton) {
                 Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(R.dimen.padding_8dp)),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(R.dimen.padding_8dp)),
                     onClick = {
                         onLastWeatherSearchClicked()
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.button_show_last_search))
                 }
@@ -199,9 +204,10 @@ fun HomeScreenView(
         HomeScreenUnionOptionsSelector(
             unitPreference = unitPreference,
             onUnitSelectionChanged = onUnitSelectionChanged,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter),
         )
     }
 }
@@ -215,66 +221,69 @@ fun HomeScreenErrorView(
     errorMessage: String,
     unitPreference: String,
     onUnitSelectionChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         Text(
             text = errorMessage,
             textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Alignment.Center),
         )
         HomeScreenUnionOptionsSelector(
             unitPreference = unitPreference,
             onUnitSelectionChanged = onUnitSelectionChanged,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter),
         )
     }
-
 }
 
 @Composable
 fun HomeScreenUnionOptionsSelector(
     unitPreference: String,
     onUnitSelectionChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val unitOptions = stringArrayResource(R.array.units_option)
-    val (selectedUnit, onOptionSelected) = remember {
-        val index = unitOptions.indexOf(unitPreference)
-        mutableStateOf(unitOptions[index])
-    }
+    val (selectedUnit, onOptionSelected) =
+        remember {
+            val index = unitOptions.indexOf(unitPreference)
+            mutableStateOf(unitOptions[index])
+        }
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.Bottom
+        verticalArrangement = Arrangement.Bottom,
     ) {
         Text(
             text = stringResource(R.string.label_select_unit),
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(dimensionResource(R.dimen.padding_8dp)),
-            horizontalArrangement = Arrangement.Center
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.padding_8dp)),
+            horizontalArrangement = Arrangement.Center,
         ) {
             unitOptions.forEach { item ->
                 Row(
-                    modifier = Modifier
-                        .selectable(
-                            selected = (item == selectedUnit),
-                            onClick = {
-                                onOptionSelected(item)
-                                onUnitSelectionChanged(item)
-                            },
-                            role = Role.RadioButton
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                        Modifier
+                            .selectable(
+                                selected = (item == selectedUnit),
+                                onClick = {
+                                    onOptionSelected(item)
+                                    onUnitSelectionChanged(item)
+                                },
+                                role = Role.RadioButton,
+                            ),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     RadioButton(
                         selected = (item == selectedUnit),
-                        onClick = null
+                        onClick = null,
                     )
                     Text(item)
                 }
@@ -285,7 +294,7 @@ fun HomeScreenUnionOptionsSelector(
 
 @Preview(
     showBackground = true,
-    showSystemUi = true
+    showSystemUi = true,
 )
 @Composable
 fun HomeScreenFirstRunViewPreview() {
@@ -295,13 +304,13 @@ fun HomeScreenFirstRunViewPreview() {
         onSearchWeatherCurrentLocationClicked = {},
         onUnitSelectionChanged = {},
         onLastWeatherSearchClicked = {},
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     )
 }
 
 @Preview(
     showBackground = true,
-    showSystemUi = true
+    showSystemUi = true,
 )
 @Composable
 fun HomeScreenLastSearchViewPreview() {
@@ -312,14 +321,13 @@ fun HomeScreenLastSearchViewPreview() {
         onSearchWeatherCurrentLocationClicked = {},
         onUnitSelectionChanged = {},
         onLastWeatherSearchClicked = {},
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     )
 }
 
-
 @Preview(
     showBackground = true,
-    showSystemUi = true
+    showSystemUi = true,
 )
 @Composable
 fun HomeScreenErrorViewPreview() {
@@ -327,6 +335,6 @@ fun HomeScreenErrorViewPreview() {
         errorMessage = "No internet connection",
         unitPreference = "Imperial",
         onUnitSelectionChanged = {},
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     )
 }

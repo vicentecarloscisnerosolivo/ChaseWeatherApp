@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -31,7 +32,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -59,15 +60,14 @@ android {
     }
 }
 
-
 dependencies {
-    //Core
+    // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    //Android Coroutines
+    // Android Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    //UI
+    // UI
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -75,57 +75,56 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    //viewModel
+    // viewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    //retrofit
+    // retrofit
     implementation(libs.retrofit)
 
-    //Gson
+    // Gson
     implementation(libs.gson)
     implementation(libs.gson.converter)
 
-    //OkHTTP
+    // OkHTTP
     implementation(libs.okHttp)
     implementation(libs.okHttp.logging.interceptor)
 
-
-    //RXJava
+    // RXJava
     implementation(libs.rxjava)
     implementation(libs.rxjava.adapter)
 
-    //RXAndroid
+    // RXAndroid
     implementation(libs.rxandroid)
 
-    //Streams
+    // Streams
     implementation(libs.androidx.lifecycle.reactive.streams)
 
-    //Multidex
+    // Multidex
     implementation(libs.androidx.multidex)
 
-    //Hilt
+    // Hilt
     implementation(libs.dagger.hilt)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.runtime.livedata)
     kapt(libs.dagger.hilt.compilation)
 
-    //Location
+    // Location
     implementation(libs.play.services.location)
 
-    //Data Source
+    // Data Source
     implementation(libs.androidx.datasource.preferences)
 
-    //Navigation
+    // Navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.navigation.support.fragments)
 
-    //HiltTesting
+    // HiltTesting
     androidTestImplementation(libs.dagger.hilt.test)
     kaptAndroidTest(libs.dagger.hilt.compilation)
 
-    //Testing
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -140,6 +139,11 @@ dependencies {
     androidTestImplementation(libs.androidx.arch.core)
 }
 
-kapt{
+kapt {
     correctErrorTypes = true
+}
+
+ktlint {
+    version = "1.4.0"
+    enableExperimentalRules.set(true)
 }

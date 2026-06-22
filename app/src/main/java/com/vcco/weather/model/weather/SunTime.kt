@@ -11,5 +11,5 @@ data class SunTime(
     @SerializedName(Constants.SUN_TIME_SUNRISE_TIME_RESPONSE)
     val sunRiseTimestamp: Long,
     @SerializedName(Constants.SUN_TIME_SUNSET_TIME_RESPONSE)
-    val sunSetTimestamp: Long
+    val sunSetTimestamp: Long,
 )

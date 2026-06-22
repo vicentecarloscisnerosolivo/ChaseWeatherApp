@@ -8,11 +8,9 @@ import retrofit2.Response
 
 /**
  * Helper used to call OpenWeatherService
+ * Continue with the bridge, here will create the interface to call OpenWeatherService using
+ * OpenWeatherApiHelper as Proxy as to control access
  */
-/*
-* Continue with the bridge, here will create the interface to call OpenWeatherService using
-* OpenWeatherApiHelper as Proxy as to control access
-*/
 interface OpenWeatherApiHelper {
     /**
      * Request Current Weather Information from Requested Location
@@ -23,7 +21,7 @@ interface OpenWeatherApiHelper {
      */
     fun getWeatherCurrentLocation(
         query: String,
-        units: String
+        units: String,
     ): Observable<Response<CurrentWeatherResponse>>
 
     /**
@@ -38,7 +36,7 @@ interface OpenWeatherApiHelper {
      * Get Location Coordinates with Zip Code and country Code
      * @param zip: String -> Requested Zip with country code
      *
-     * @return  Observable<Response<ZipResponse>>
+     * @return Observable<Response<ZipResponse>>
      */
     fun getInfoFromZipCode(zip: String): Observable<Response<ZipResponse>>
 
@@ -51,6 +49,6 @@ interface OpenWeatherApiHelper {
      */
     fun getReverseLocation(
         latitude: Float,
-        longitude: Float
+        longitude: Float,
     ): Observable<Response<List<GeocodeResponse>>>
 }

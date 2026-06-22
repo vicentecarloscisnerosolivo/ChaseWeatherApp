@@ -5,7 +5,7 @@ import com.vcco.weather.model.geoconfig.GeocodeResponse
 import com.vcco.weather.model.weather.CurrentWeatherResponse
 import com.vcco.weather.model.zip.ZipResponse
 import com.vcco.weather.network.apiHelper.OpenWeatherApiHelper
-import com.vcco.weather.network.apiHelper.OpenWeatherApiHelperImp
+import com.vcco.weather.network.apiHelper.OpenWeatherApiHelperImpl
 import com.vcco.weather.network.repository.OpenWeatherRepository
 import com.vcco.weather.network.service.OpenWeatherService
 import com.vcco.weather.repository.responses.OpenWeatherServiceResponses
@@ -42,12 +42,11 @@ class OpenWeatherRepositoryTest {
     private lateinit var apiHelper: OpenWeatherApiHelper
     private lateinit var repository: OpenWeatherRepository
 
-
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         hiltRule.inject()
-        apiHelper = OpenWeatherApiHelperImp(service)
+        apiHelper = OpenWeatherApiHelperImpl(service)
         repository = OpenWeatherRepository(apiHelper)
     }
 
@@ -55,7 +54,8 @@ class OpenWeatherRepositoryTest {
     fun useGeCurrentWeatherRepositorySuccess() {
         val currentResponse = OpenWeatherServiceResponses.getCurrentWeatherResponseCorrect()
         runBlocking {
-            Mockito.`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
+            Mockito
+                .`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
                 .thenReturn(Observable.just(Response.success(currentResponse)))
 
             val response = repository.getCurrentWeatherFromLocation("HomeTown", "metric")
@@ -71,7 +71,8 @@ class OpenWeatherRepositoryTest {
     fun userGetInfoFromLocation() {
         val currentLocationResponse =
             OpenWeatherServiceResponses.getCurrentLocationSuccessResponses()
-        Mockito.`when`(service.getReverseLocation(anyFloat(), anyFloat(), anyString()))
+        Mockito
+            .`when`(service.getReverseLocation(anyFloat(), anyFloat(), anyString()))
             .thenReturn(Observable.just(Response.success(currentLocationResponse)))
 
         val response = repository.getLocationInfoFromCoordinates(32.814f, -96.9489f)
@@ -85,7 +86,8 @@ class OpenWeatherRepositoryTest {
     @Test
     fun userGetZipCodeResponse() {
         val zipResponse = OpenWeatherServiceResponses.getZipResponse()
-        Mockito.`when`(service.getInfoFromZipCode(anyString(), anyString()))
+        Mockito
+            .`when`(service.getInfoFromZipCode(anyString(), anyString()))
             .thenReturn(Observable.just(Response.success(zipResponse)))
 
         val response = repository.getInfoFromZipCode("75039")
@@ -101,7 +103,8 @@ class OpenWeatherRepositoryTest {
     fun userGetCityNamesResponse() {
         val currentLocationResponse =
             OpenWeatherServiceResponses.getCurrentLocationSuccessResponses()
-        Mockito.`when`(service.getInfoWithLocationName(anyString(), anyString()))
+        Mockito
+            .`when`(service.getInfoWithLocationName(anyString(), anyString()))
             .thenReturn(Observable.just(Response.success(currentLocationResponse)))
 
         val response = repository.getLocationInfoFromName("Irving")
@@ -116,9 +119,10 @@ class OpenWeatherRepositoryTest {
     fun useGeCurrentWeatherRepositoryError() {
         val responseErrorBody = OpenWeatherServiceResponses.getResponseErrorBody()
         runBlocking {
-            Mockito.`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
+            Mockito
+                .`when`(service.getCurrentWeather(anyString(), anyString(), anyString()))
                 .thenReturn(
-                    Observable.just(Response.error(404, responseErrorBody))
+                    Observable.just(Response.error(404, responseErrorBody)),
                 )
 
             val response = repository.getCurrentWeatherFromLocation("HomeTown", "metric")
@@ -133,7 +137,8 @@ class OpenWeatherRepositoryTest {
 
     @Test
     fun userGetInfoFromLocationError() {
-        Mockito.`when`(service.getReverseLocation(anyFloat(), anyFloat(), anyString()))
+        Mockito
+            .`when`(service.getReverseLocation(anyFloat(), anyFloat(), anyString()))
             .thenReturn(Observable.just(Response.success(emptyList())))
 
         val response = repository.getLocationInfoFromCoordinates(32.814f, -96.9489f)
@@ -147,7 +152,8 @@ class OpenWeatherRepositoryTest {
     @Test
     fun userGetZipCodeResponseError() {
         val responseErrorBody = OpenWeatherServiceResponses.getResponseErrorBody()
-        Mockito.`when`(service.getInfoFromZipCode(anyString(), anyString()))
+        Mockito
+            .`when`(service.getInfoFromZipCode(anyString(), anyString()))
             .thenReturn(Observable.just(Response.error(404, responseErrorBody)))
 
         val response = repository.getInfoFromZipCode("75039")
@@ -161,7 +167,8 @@ class OpenWeatherRepositoryTest {
 
     @Test
     fun userGetCityNamesResponseError() {
-        Mockito.`when`(service.getInfoWithLocationName(anyString(), anyString()))
+        Mockito
+            .`when`(service.getInfoWithLocationName(anyString(), anyString()))
             .thenReturn(Observable.just(Response.success(emptyList())))
 
         val response = repository.getLocationInfoFromName("Irving")

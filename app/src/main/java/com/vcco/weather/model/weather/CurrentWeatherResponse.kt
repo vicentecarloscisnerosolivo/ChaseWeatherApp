@@ -22,9 +22,9 @@ data class CurrentWeatherResponse(
     @SerializedName(Constants.CURRENT_WEATHER_CLOUDS_RESPONSE)
     val clouds: Clouds,
     @SerializedName(Constants.CURRENT_WEATHER_RAIN_RESPONSE)
-    val rain: Rain,
+    val rain: Rain?,
     @SerializedName(Constants.CURRENT_WEATHER_SNOW_RESPONSE)
-    val snow: Snow,
+    val snow: Snow?,
     /**
      * Time when the data was calculated
      *
@@ -54,5 +54,5 @@ data class CurrentWeatherResponse(
      * Value given from the API
      */
     @SerializedName(Constants.CURRENT_WEATHER_NAME_RESPONSE)
-    val name: String
+    val name: String,
 )
