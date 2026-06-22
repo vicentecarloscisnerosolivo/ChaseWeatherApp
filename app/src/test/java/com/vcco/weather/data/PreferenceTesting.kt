@@ -31,7 +31,8 @@ class PreferenceTesting {
     fun setUp() {
         MockitoAnnotations.openMocks(this)
 
-        Mockito.`when`(mockContext.getSharedPreferences(anyString(), anyInt()))
+        Mockito
+            .`when`(mockContext.getSharedPreferences(anyString(), anyInt()))
             .thenReturn(mockSharedPreferences)
         Mockito.`when`(mockSharedPreferences.edit()).thenReturn(mockEditor)
         Mockito.`when`(mockEditor.putString(anyString(), anyString())).thenReturn(mockEditor)
@@ -50,12 +51,13 @@ class PreferenceTesting {
 
     @Test
     fun getUnitDefaultCorrectValue() {
-        Mockito.`when`(
-            mockSharedPreferences.getString(
-                PreferencesConstants.USER_UNIT_PREFERENCE,
-                PreferencesConstants.DEFAULT_UNIT
-            )
-        ).thenReturn(PreferencesConstants.DEFAULT_UNIT)
+        Mockito
+            .`when`(
+                mockSharedPreferences.getString(
+                    PreferencesConstants.USER_UNIT_PREFERENCE,
+                    PreferencesConstants.DEFAULT_UNIT,
+                ),
+            ).thenReturn(PreferencesConstants.DEFAULT_UNIT)
 
         val defaultUnit = sp.unitValue
         assertEquals(defaultUnit, PreferencesConstants.DEFAULT_UNIT)
@@ -64,12 +66,13 @@ class PreferenceTesting {
     @Test
     fun getUpdatedUnitCorrectValue() {
         val savedUnit = "Metric"
-        Mockito.`when`(
-            mockSharedPreferences.getString(
-                PreferencesConstants.USER_UNIT_PREFERENCE,
-                PreferencesConstants.DEFAULT_UNIT
-            )
-        ).thenReturn(savedUnit)
+        Mockito
+            .`when`(
+                mockSharedPreferences.getString(
+                    PreferencesConstants.USER_UNIT_PREFERENCE,
+                    PreferencesConstants.DEFAULT_UNIT,
+                ),
+            ).thenReturn(savedUnit)
 
         val unit = sp.unitValue
         assertEquals(unit, savedUnit)
@@ -87,12 +90,13 @@ class PreferenceTesting {
 
     @Test
     fun getNewSearchEmptyCorrectValue() {
-        Mockito.`when`(
-            mockSharedPreferences.getString(
-                PreferencesConstants.LAST_WEATHER_SEARCH,
-                PreferencesConstants.EMPTY_STRING
-            )
-        ).thenReturn(PreferencesConstants.EMPTY_STRING)
+        Mockito
+            .`when`(
+                mockSharedPreferences.getString(
+                    PreferencesConstants.LAST_WEATHER_SEARCH,
+                    PreferencesConstants.EMPTY_STRING,
+                ),
+            ).thenReturn(PreferencesConstants.EMPTY_STRING)
 
         val defaultSearchValue = sp.lastSearch
         assertEquals(defaultSearchValue, PreferencesConstants.EMPTY_STRING)
@@ -102,12 +106,13 @@ class PreferenceTesting {
     fun getUpdatedLastSearchCorrectValue() {
         val savedSearch =
             Gson().toJson(OpenWeatherServiceResponses.getCurrentWeatherResponseCorrect())
-        Mockito.`when`(
-            mockSharedPreferences.getString(
-                PreferencesConstants.LAST_WEATHER_SEARCH,
-                PreferencesConstants.EMPTY_STRING
-            )
-        ).thenReturn(savedSearch)
+        Mockito
+            .`when`(
+                mockSharedPreferences.getString(
+                    PreferencesConstants.LAST_WEATHER_SEARCH,
+                    PreferencesConstants.EMPTY_STRING,
+                ),
+            ).thenReturn(savedSearch)
 
         val unit = sp.lastSearch
         assertEquals(unit, savedSearch)

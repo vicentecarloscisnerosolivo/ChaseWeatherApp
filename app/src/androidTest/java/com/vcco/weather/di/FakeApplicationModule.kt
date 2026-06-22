@@ -9,8 +9,9 @@ import org.mockito.Mockito
 @DisableInstallInCheck
 @Module
 object FakeApplicationModule {
-
     @Provides
     fun provideOpenWeatherService(): OpenWeatherService =
-        Mockito.mock(OpenWeatherService::class.java)
+        Mockito.mock(
+            OpenWeatherService::class.java,
+        )
 }

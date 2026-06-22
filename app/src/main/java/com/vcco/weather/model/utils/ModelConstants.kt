@@ -1,42 +1,42 @@
 package com.vcco.weather.model.utils
 
 internal object ModelConstants {
-    //Commons Response
+    // Commons Response
     const val LONGITUDE_RESPONSE = "lon"
     const val LATITUDE_RESPONSE = "lat"
     const val NAME_RESPONSE = "name"
     const val COUNTRY_RESPONSE = "country"
 
-    //Conditions Response
+    // Conditions Response
     const val CONDITIONS_MAIN_CONDITION_RESPONSE = "main"
     const val CONDITIONS_DESCRIPTION_RESPONSE = "description"
     const val CONDITIONS_ICON_RESPONSE = "icon"
 
-    //Temperature Response
+    // Temperature Response
     const val CURRENT_TEMPERATURE_RESPONSE = "temp"
     const val CURRENT_TEMPERATURE_FEELS_LIKE_RESPONSE = "feels_like"
     const val CURRENT_HUMIDITY_RESPONSE = "humidity"
     const val CURRENT_MAX_TEMPERATURE_RESPONSE = "temp_max"
     const val CURRENT_MIN_TEMPERATURE_RESPONSE = "temp_min"
 
-    //Wind Response
+    // Wind Response
     const val WIND_SPEED_RESPONSE = "speed"
     const val WIND_DIRECTION_RESPONSE = "deg"
 
-    //Clouds Response
+    // Clouds Response
     const val CLOUD_COVERAGE_RESPONSE = "all"
 
-    //Rain Response
+    // Rain Response
     const val RAIN_AMOUNT_RESPONSE = "1h"
 
-    //Snow Response
+    // Snow Response
     const val SNOW_AMOUNT_RESPONSE = "1h"
 
-    //SunTime Response
+    // SunTime Response
     const val SUN_TIME_SUNRISE_TIME_RESPONSE = "sunrise"
     const val SUN_TIME_SUNSET_TIME_RESPONSE = "sunset"
 
-    //CurrentWeather Response
+    // CurrentWeather Response
     const val CURRENT_WEATHER_COORDINATE_RESPONSE = "coord"
     const val CURRENT_WEATHER_CONDITIONS_RESPONSE = "weather"
     const val CURRENT_WEATHER_TEMPERATURE_RESPONSE = "main"
@@ -51,15 +51,13 @@ internal object ModelConstants {
     const val CURRENT_WEATHER_ID_RESPONSE = "id"
     const val CURRENT_WEATHER_NAME_RESPONSE = "name"
 
-
-    //Geocode Response
+    // Geocode Response
     const val GEOCODE_LOCAL_NAMES_RESPONSE = "local_names"
     const val GEOCODE_STATE_RESPONSE = "state"
 
-    //Zip Response
+    // Zip Response
     const val ZIP_ZIP_RESPONSE = "zip"
 
-    //Error Response
+    // Error Response
     const val CODE = "code"
-
 }

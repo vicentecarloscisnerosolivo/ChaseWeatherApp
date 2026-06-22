@@ -22,7 +22,7 @@ interface OpenWeatherService {
     fun getCurrentWeather(
         @Query(Constants.QUERY, encoded = true) query: String,
         @Query(Constants.APY_KEY) apiKey: String,
-        @Query(Constants.UNITS) units: String
+        @Query(Constants.UNITS) units: String,
     ): Observable<Response<CurrentWeatherResponse>>
 
     /**
@@ -35,7 +35,7 @@ interface OpenWeatherService {
     @GET(Constants.GEOCODE_URL)
     fun getInfoWithLocationName(
         @Query(Constants.QUERY, encoded = true) query: String,
-        @Query(Constants.APY_KEY) apiKey: String
+        @Query(Constants.APY_KEY) apiKey: String,
     ): Observable<Response<List<GeocodeResponse>>>
 
     /**
@@ -43,12 +43,12 @@ interface OpenWeatherService {
      * @param zip: String -> Requested Zip with country code
      * @param apiKey: String
      *
-     * @return  Observable<Response<ZipResponse>>
+     * @return Observable<Response<ZipResponse>>
      */
     @GET(Constants.ZIP_URL)
     fun getInfoFromZipCode(
         @Query(Constants.ZIP, encoded = true) zip: String,
-        @Query(Constants.APY_KEY) apiKey: String
+        @Query(Constants.APY_KEY) apiKey: String,
     ): Observable<Response<ZipResponse>>
 
     /**
@@ -63,6 +63,6 @@ interface OpenWeatherService {
     fun getReverseLocation(
         @Query(Constants.LATITUDE) latitude: Float,
         @Query(Constants.LONGITUDE) longitude: Float,
-        @Query(Constants.APY_KEY) apiKey: String
+        @Query(Constants.APY_KEY) apiKey: String,
     ): Observable<Response<List<GeocodeResponse>>>
 }

@@ -19,7 +19,7 @@ class DetailScreenTest {
     fun detailScreenLoading() {
         composeTestRule.setContent {
             DetailScreen(
-                detailAppUiState = DetailAppUiState.Loading
+                detailAppUiState = DetailAppUiState.Loading,
             )
         }
 
@@ -27,7 +27,8 @@ class DetailScreenTest {
             .onNodeWithTag("Loading Info")
             .assertExists()
 
-        composeTestRule.onNodeWithText("Current Temperature")
+        composeTestRule
+            .onNodeWithText("Current Temperature")
             .assertDoesNotExist()
     }
 
@@ -35,42 +36,45 @@ class DetailScreenTest {
     fun detailScreenError() {
         composeTestRule.setContent {
             DetailScreen(
-                detailAppUiState = DetailAppUiState.Error("No Internet")
+                detailAppUiState = DetailAppUiState.Error("No Internet"),
             )
         }
 
-        composeTestRule.onNodeWithText("No Internet")
+        composeTestRule
+            .onNodeWithText("No Internet")
             .assertExists()
 
-        composeTestRule.onNodeWithText("Current Temperature")
+        composeTestRule
+            .onNodeWithText("Current Temperature")
             .assertDoesNotExist()
 
         composeTestRule
             .onNodeWithTag("Loading Info")
             .assertDoesNotExist()
-
     }
 
     @Test
     fun detailWeatherScreen() {
-
         val currentWeather =
             OpenWeatherServiceResponses.getCurrentWeatherResponseCorrect()
         var currentTemperature = ""
         composeTestRule.setContent {
             DetailScreen(
-                detailAppUiState = DetailAppUiState.Success(currentWeather)
+                detailAppUiState = DetailAppUiState.Success(currentWeather),
             )
-            currentTemperature = stringResource(
-                R.string.label_current_temperature_format,
-                currentWeather.temperature.temperature.toInt()
-            )
+            currentTemperature =
+                stringResource(
+                    R.string.label_current_temperature_format,
+                    currentWeather.temperature.temperature.toInt(),
+                )
         }
 
-        composeTestRule.onNodeWithText("Current Temperature")
+        composeTestRule
+            .onNodeWithText("Current Temperature")
             .assertExists()
 
-        composeTestRule.onNodeWithText(currentTemperature)
+        composeTestRule
+            .onNodeWithText(currentTemperature)
             .assertExists()
 
         composeTestRule

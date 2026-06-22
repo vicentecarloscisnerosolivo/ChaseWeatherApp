@@ -10,28 +10,27 @@ import org.junit.Rule
 import org.junit.Test
 
 class HomeScreenTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
-    fun HomeScreenTestFirstLaunch() {
+    fun homeScreenTestFirstLaunch() {
         composeTestRule.setContent {
             HomeScreen(
-                homeUiState = HomeUiState(
-                    homeAppUiState = HomeAppUiState.FirstRun
-                ),
+                homeUiState =
+                    HomeUiState(
+                        homeAppUiState = HomeAppUiState.FirstRun,
+                    ),
                 onSearchWeatherCLicked = {},
                 onSearchWeatherCurrentLocationClicked = {},
                 onLastWeatherSearchClicked = {},
-                onUnitSelectionChanged = {}
+                onUnitSelectionChanged = {},
             )
         }
 
         composeTestRule
             .onNodeWithText("Type City or Zip Code")
             .assertExists()
-
 
         composeTestRule
             .onNodeWithText("Show last search")
@@ -39,16 +38,17 @@ class HomeScreenTest {
     }
 
     @Test
-    fun HomeScreenTestError() {
+    fun homeScreenTestError() {
         composeTestRule.setContent {
             HomeScreen(
-                homeUiState = HomeUiState(
-                    homeAppUiState = HomeAppUiState.NetworkError("No Internet")
-                ),
+                homeUiState =
+                    HomeUiState(
+                        homeAppUiState = HomeAppUiState.NetworkError("No Internet"),
+                    ),
                 onSearchWeatherCLicked = {},
                 onSearchWeatherCurrentLocationClicked = {},
                 onLastWeatherSearchClicked = {},
-                onUnitSelectionChanged = {}
+                onUnitSelectionChanged = {},
             )
         }
 
@@ -56,32 +56,32 @@ class HomeScreenTest {
             .onNodeWithText("Type City or Zip Code")
             .assertDoesNotExist()
 
-
         composeTestRule
             .onNodeWithText("No Internet")
             .assertExists()
     }
 
     @Test
-    fun HomeScreenTestLastSearch() {
+    fun homeScreenTestLastSearch() {
         composeTestRule.setContent {
             HomeScreen(
-                homeUiState = HomeUiState(
-                    homeAppUiState = HomeAppUiState.LastWeather(
-                        OpenWeatherServiceResponses.Companion.getCurrentWeatherResponseCorrect()
-                    )
-                ),
+                homeUiState =
+                    HomeUiState(
+                        homeAppUiState =
+                            HomeAppUiState.LastWeather(
+                                OpenWeatherServiceResponses.getCurrentWeatherResponseCorrect(),
+                            ),
+                    ),
                 onSearchWeatherCLicked = {},
                 onSearchWeatherCurrentLocationClicked = {},
                 onLastWeatherSearchClicked = {},
-                onUnitSelectionChanged = {}
+                onUnitSelectionChanged = {},
             )
         }
 
         composeTestRule
             .onNodeWithText("Type City or Zip Code")
             .assertExists()
-
 
         composeTestRule
             .onNodeWithText("Show last search")

@@ -10,5 +10,5 @@ import com.vcco.weather.model.utils.ModelConstants as Constants
  */
 data class Snow(
     @SerializedName(Constants.SNOW_AMOUNT_RESPONSE)
-    val amount: Float
+    val amount: Float,
 )

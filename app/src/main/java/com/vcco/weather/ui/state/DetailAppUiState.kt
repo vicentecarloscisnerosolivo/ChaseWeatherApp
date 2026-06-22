@@ -6,13 +6,16 @@ sealed interface DetailAppUiState {
     /**
      * Used to show data for Current Search
      */
-    data class Success(val currentWeatherResponse: CurrentWeatherResponse) : DetailAppUiState
-
+    data class Success(
+        val currentWeatherResponse: CurrentWeatherResponse,
+    ) : DetailAppUiState
 
     /**
      * Used to show Error on Last Search
      */
-    data class Error(val error: String) : DetailAppUiState
+    data class Error(
+        val error: String,
+    ) : DetailAppUiState
 
     /**
      * Used to show Loading Screen
