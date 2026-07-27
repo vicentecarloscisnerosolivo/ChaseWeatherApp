@@ -25,3 +25,4 @@ local.properties
 .idea/misc.xml
 .idea/misc.xml
 .idea/deploymentTargetSelector.xml
+app/schemas/com.vcco.weather.db.AppDatabase/1.json

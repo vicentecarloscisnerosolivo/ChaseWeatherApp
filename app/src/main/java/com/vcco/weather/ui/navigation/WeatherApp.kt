@@ -8,8 +8,6 @@ import android.location.LocationManager
 import android.provider.Settings
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,6 +24,7 @@ import com.google.android.gms.location.LocationServices
 import com.vcco.weather.R
 import com.vcco.weather.navigation.WeatherScreen
 import com.vcco.weather.ui.screens.DetailScreen
+import com.vcco.weather.ui.screens.HistoryScreen
 import com.vcco.weather.ui.screens.HomeScreen
 import com.vcco.weather.ui.screens.LastSearchDetailScreen
 import com.vcco.weather.ui.state.HomeAppUiState
@@ -46,6 +45,8 @@ fun WeatherApp(
     val homeAppUiState by vm.homeScreenUiState.collectAsState()
 
     val detailAppUiState by vm.detailScreenUiState.collectAsState()
+
+    val historyUiState by vm.historyScreenUiState.collectAsState()
 
     val blackStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen =
@@ -68,14 +69,13 @@ fun WeatherApp(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
                     .padding(innerPadding),
         ) {
             composable(route = WeatherScreen.Home.name) {
                 HomeScreen(
                     homeUiState = homeAppUiState,
                     onSearchWeatherCLicked = {
-                        searchWeather(location = it, vm = vm)
+                        searchWeather(location = it, vm = vm, context = context)
                         navController.navigate(WeatherScreen.Detail.name)
                     },
                     onSearchWeatherCurrentLocationClicked = {
@@ -91,6 +91,14 @@ fun WeatherApp(
                     },
                     onUnitSelectionChanged = {
                         vm.updateUnitPreference(it)
+                    },
+                    onAllSearchClicked = {
+                        navController.navigate(WeatherScreen.HistorySearch.name)
+                        vm.getAllWeatherSearch(context)
+                    },
+                    onLastFiveSearchClicked = {
+                        navController.navigate(WeatherScreen.HistorySearch.name)
+                        vm.getMostFiveRecentWeatherSearch(context)
                     },
                     modifier =
                         Modifier
@@ -119,6 +127,15 @@ fun WeatherApp(
                             .padding(dimensionResource(R.dimen.padding_16dp)),
                 )
             }
+            composable(route = WeatherScreen.HistorySearch.name) {
+                HistoryScreen(
+                    historyAppUiState = historyUiState,
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(dimensionResource(R.dimen.padding_16dp)),
+                )
+            }
         }
     }
 }
@@ -129,12 +146,13 @@ fun WeatherApp(
 private fun searchWeather(
     location: String,
     vm: MainActivityViewModel,
+    context: Context,
 ) {
     if (location.matches(".*\\d+.*".toRegex())) {
         // remove spaces, causing the search fail when is a valid zip code
-        vm.getInfoFromZipCode(location.filter { !it.isWhitespace() })
+        vm.getInfoFromZipCode(location.filter { !it.isWhitespace() }, context)
     } else {
-        vm.searchCityWeather(location)
+        vm.searchCityWeather(location, false, context)
     }
 }
 
@@ -159,6 +177,7 @@ private fun getLastKnowLocation(
                     vm.searchWeatherFromLocation(
                         it.latitude.toFloat(),
                         it.longitude.toFloat(),
+                        context,
                     )
                     navController.navigate(WeatherScreen.Detail.name)
                 }

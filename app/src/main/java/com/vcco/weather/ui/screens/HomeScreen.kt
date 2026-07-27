@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -52,6 +53,8 @@ fun HomeScreen(
     onSearchWeatherCurrentLocationClicked: () -> Unit,
     onLastWeatherSearchClicked: () -> Unit,
     onUnitSelectionChanged: (String) -> Unit,
+    onAllSearchClicked: () -> Unit,
+    onLastFiveSearchClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (homeUiState.homeAppUiState) {
@@ -67,10 +70,13 @@ fun HomeScreen(
             HomeScreenView(
                 canShowLastSearchButton = false,
                 unitPreference = homeUiState.units,
+                canShowLastFiveSearch = false,
                 onSearchWeatherCLicked = onSearchWeatherCLicked,
                 onSearchWeatherCurrentLocationClicked = onSearchWeatherCurrentLocationClicked,
                 onLastWeatherSearchClicked = onLastWeatherSearchClicked,
                 onUnitSelectionChanged = onUnitSelectionChanged,
+                onLastFiveSearchClicked = onLastFiveSearchClicked,
+                onAllSearchClicked = onAllSearchClicked,
                 modifier = modifier,
             )
 
@@ -81,9 +87,12 @@ fun HomeScreen(
                 HomeScreenView(
                     canShowLastSearchButton = true,
                     unitPreference = homeUiState.units,
+                    canShowLastFiveSearch = homeUiState.canShowLastFiveSearch,
                     onSearchWeatherCLicked = onSearchWeatherCLicked,
                     onSearchWeatherCurrentLocationClicked = onSearchWeatherCurrentLocationClicked,
                     onLastWeatherSearchClicked = onLastWeatherSearchClicked,
+                    onAllSearchClicked = onAllSearchClicked,
+                    onLastFiveSearchClicked = onLastFiveSearchClicked,
                     onUnitSelectionChanged = onUnitSelectionChanged,
                     modifier = modifier,
                 )
@@ -100,10 +109,13 @@ fun HomeScreen(
 fun HomeScreenView(
     canShowLastSearchButton: Boolean,
     unitPreference: String,
+    canShowLastFiveSearch: Boolean,
     onSearchWeatherCLicked: (String) -> Unit,
     onSearchWeatherCurrentLocationClicked: () -> Unit,
     onLastWeatherSearchClicked: () -> Unit,
     onUnitSelectionChanged: (String) -> Unit,
+    onAllSearchClicked: () -> Unit,
+    onLastFiveSearchClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var locationSearch by remember { mutableStateOf("") }
@@ -145,14 +157,16 @@ fun HomeScreenView(
                     Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(dimensionResource(R.dimen.padding_8dp))
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .testTag(stringResource(R.string.label_search_city)),
             )
 
             Button(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(dimensionResource(R.dimen.padding_8dp)),
+                        .padding(dimensionResource(R.dimen.padding_8dp))
+                        .testTag(stringResource(R.string.button_search)),
                 onClick = {
                     if (locationSearch.isNotBlank()) {
                         onSearchWeatherCLicked(locationSearch)
@@ -173,7 +187,8 @@ fun HomeScreenView(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(dimensionResource(R.dimen.padding_8dp)),
+                        .padding(dimensionResource(R.dimen.padding_8dp))
+                        .testTag(stringResource(R.string.button_search_current_location)),
                 onClick = {
                     if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
                         PackageManager.PERMISSION_GRANTED
@@ -192,12 +207,41 @@ fun HomeScreenView(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(dimensionResource(R.dimen.padding_8dp)),
+                            .padding(dimensionResource(R.dimen.padding_8dp))
+                            .testTag(stringResource(R.string.button_show_last_search)),
                     onClick = {
                         onLastWeatherSearchClicked()
                     },
                 ) {
                     Text(stringResource(R.string.button_show_last_search))
+                }
+
+                Button(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(R.dimen.padding_8dp))
+                            .testTag(stringResource(R.string.button_show_all_search)),
+                    onClick = {
+                        onAllSearchClicked()
+                    },
+                ) {
+                    Text(stringResource(R.string.button_show_all_search))
+                }
+
+                if (canShowLastFiveSearch) {
+                    Button(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(dimensionResource(R.dimen.padding_8dp))
+                                .testTag(stringResource(R.string.button_show_five_most_recent_search)),
+                        onClick = {
+                            onLastFiveSearchClicked()
+                        },
+                    ) {
+                        Text(stringResource(R.string.button_show_five_most_recent_search))
+                    }
                 }
             }
         }
@@ -207,7 +251,8 @@ fun HomeScreenView(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter),
+                    .align(Alignment.BottomCenter)
+                    .testTag(stringResource(R.string.label_select_unit_test_tag)),
         )
     }
 }
@@ -235,7 +280,8 @@ fun HomeScreenErrorView(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter),
+                    .align(Alignment.BottomCenter)
+                    .testTag(stringResource(R.string.label_select_unit_test_tag)),
         )
     }
 }
@@ -304,6 +350,8 @@ fun HomeScreenFirstRunViewPreview() {
         onSearchWeatherCurrentLocationClicked = {},
         onUnitSelectionChanged = {},
         onLastWeatherSearchClicked = {},
+        onLastFiveSearchClicked = {},
+        onAllSearchClicked = {},
         modifier = Modifier.fillMaxSize(),
     )
 }
@@ -317,10 +365,13 @@ fun HomeScreenLastSearchViewPreview() {
     HomeScreenView(
         canShowLastSearchButton = true,
         unitPreference = "Imperial",
+        canShowLastFiveSearch = true,
         onSearchWeatherCLicked = {},
         onSearchWeatherCurrentLocationClicked = {},
         onUnitSelectionChanged = {},
         onLastWeatherSearchClicked = {},
+        onLastFiveSearchClicked = {},
+        onAllSearchClicked = {},
         modifier = Modifier.fillMaxSize(),
     )
 }

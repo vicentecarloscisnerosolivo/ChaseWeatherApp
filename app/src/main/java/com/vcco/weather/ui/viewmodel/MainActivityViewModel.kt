@@ -4,20 +4,17 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.vcco.weather.R
 import com.vcco.weather.data.Preference
+import com.vcco.weather.model.errors.WeatherErrorResponse
 import com.vcco.weather.model.weather.CurrentWeatherResponse
 import com.vcco.weather.network.repository.OpenWeatherRepository
 import com.vcco.weather.network.repository.OpenWeatherRepositoryJava
-import com.vcco.weather.network.utils.NetworkConstants
 import com.vcco.weather.ui.state.DetailAppUiState
+import com.vcco.weather.ui.state.HistoryAppUiState
 import com.vcco.weather.ui.state.HomeAppUiState
 import com.vcco.weather.ui.state.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,8 +27,6 @@ import javax.inject.Inject
 class MainActivityViewModel
     @Inject
     constructor(
-        @ApplicationContext
-        private val context: Context,
         private val sp: Preference,
         private val repository: OpenWeatherRepository,
         private val repositoryJava: OpenWeatherRepositoryJava,
@@ -56,21 +51,31 @@ class MainActivityViewModel
             )
         val homeScreenUiState = _homeScreenUiState.asStateFlow()
 
+        private val _historyScreenUiState =
+            MutableStateFlow<HistoryAppUiState>(HistoryAppUiState.Loading)
+        val historyScreenUiState = _historyScreenUiState.asStateFlow()
+
         /**
          * init data and get units saved data preference and last search
          */
         init {
-            val lastSearch = sp.lastSearch
-            if (lastSearch != "") {
-                val lastSearchResponse = Gson().fromJson(lastSearch, CurrentWeatherResponse::class.java)
-                updateHomeUIState(
-                    isFromInit = true,
-                    units = sp.unitValue,
-                    newHomeAppUiState =
-                        HomeAppUiState.LastWeather(
-                            lastWeatherResponse = lastSearchResponse,
-                        ),
-                )
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.populateData()
+                val lastSearch = repository.getMostRecentWeatherSearch()
+                val mostRecentSearch = repository.getListOfRecentWeatherSearch()
+
+                lastSearch?.let { weatherResponse ->
+                    updateHomeUIState(
+                        isFromInit = true,
+                        units = sp.unitValue,
+                        canShowLastFiveSearch =
+                            if (mostRecentSearch != null) mostRecentSearch.size >= 5 else false,
+                        newHomeAppUiState =
+                            HomeAppUiState.LastWeather(
+                                lastWeatherResponse = weatherResponse,
+                            ),
+                    )
+                }
             }
         }
 
@@ -90,33 +95,47 @@ class MainActivityViewModel
         fun searchCityWeather(
             location: String,
             isFromZipCode: Boolean = false,
+            context: Context,
         ) {
             viewModelScope.launch(Dispatchers.IO) {
                 updateDetailUIState(DetailAppUiState.Loading)
-                repository
-                    .getCurrentWeatherFromLocation(location, sp.unitValue)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ response ->
-                        if (response.isSuccessful) {
-                            response.body()?.let {
-                                updateDetailUIState(
-                                    DetailAppUiState.Success(it),
-                                )
-                                saveLastSearch(it)
-                            }
-                        } else if ((response.raw().message == NetworkConstants.NOT_FOUND || response.raw().code == 404) && !isFromZipCode) {
-                            Log.i(TAG, "Retrieving data from zip code")
-                            getInfoFromZipCode(location)
-                        }
-                    }, {
-                        it.printStackTrace()
+                try {
+                    val result =
+                        repository.getCurrentWeatherFromLocation(
+                            location,
+                            sp.unitValue,
+                            isFromZipCode,
+                            context,
+                        )
+                    if (result != null) {
                         updateDetailUIState(
-                            DetailAppUiState.Error(
-                                it.message ?: context.getString(R.string.error_server_error),
+                            DetailAppUiState.Success(
+                                result,
                             ),
                         )
-                    })
+                        saveLastSearch(result)
+                    } else {
+                        updateDetailUIState(
+                            DetailAppUiState.Error(
+                                context.getString(R.string.error_no_internet_connection),
+                            ),
+                        )
+                    }
+                } catch (e: WeatherErrorResponse) {
+                    e.printStackTrace()
+                    updateDetailUIState(
+                        DetailAppUiState.Error(
+                            e.message ?: context.getString(R.string.error_not_found_location),
+                        ),
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    updateDetailUIState(
+                        DetailAppUiState.Error(
+                            e.message ?: context.getString(R.string.error_not_found_location),
+                        ),
+                    )
+                }
             }
         }
 
@@ -124,42 +143,48 @@ class MainActivityViewModel
          * Search with [zipCode] to get name of the city, state and country
          */
 
-        fun getInfoFromZipCode(zipCode: String) {
+        fun getInfoFromZipCode(
+            zipCode: String,
+            context: Context,
+        ) {
             viewModelScope.launch(Dispatchers.IO) {
                 updateDetailUIState(DetailAppUiState.Loading)
-                repository
-                    .getInfoFromZipCode(zipCode)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ response ->
-                        if (response.isSuccessful) {
-                            val data = response.body()
-                            if (data != null) {
-                                val query =
-                                    context.getString(
-                                        R.string.format_string_for_city_query,
-                                        data.name,
-                                        "",
-                                        data.country,
-                                    )
-                                searchCityWeather(query, isFromZipCode = true)
-                            } else {
-                                updateDetailUIState(
-                                    DetailAppUiState.Error(context.getString(R.string.error_not_found_location)),
-                                )
-                            }
-                        } else if (response.raw().code == 404 || response.raw().message == NetworkConstants.NOT_FOUND) {
-                            updateDetailUIState(
-                                DetailAppUiState.Error(context.getString(R.string.error_not_found_location)),
-                            )
-                        }
-                    }, {
+                try {
+                    val result =
+                        repository.getInfoFromZipCode(
+                            zipCode = zipCode,
+                            unit = sp.unitValue,
+                            context = context,
+                        )
+                    if (result != null) {
                         updateDetailUIState(
-                            DetailAppUiState.Error(
-                                it.message ?: context.getString(R.string.error_server_error),
+                            DetailAppUiState.Success(
+                                result,
                             ),
                         )
-                    })
+                        saveLastSearch(result)
+                    } else {
+                        updateDetailUIState(
+                            DetailAppUiState.Error(
+                                context.getString(R.string.error_no_internet_connection),
+                            ),
+                        )
+                    }
+                } catch (e: WeatherErrorResponse) {
+                    e.printStackTrace()
+                    updateDetailUIState(
+                        DetailAppUiState.Error(
+                            e.message ?: context.getString(R.string.error_not_found_location),
+                        ),
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    updateDetailUIState(
+                        DetailAppUiState.Error(
+                            e.message ?: context.getString(R.string.error_server_error),
+                        ),
+                    )
+                }
             }
         }
 
@@ -170,37 +195,45 @@ class MainActivityViewModel
         fun searchWeatherFromLocation(
             latitude: Float,
             longitude: Float,
+            context: Context,
         ) {
-            updateDetailUIState(DetailAppUiState.Loading)
-            viewModelScope.launch {
-                repositoryJava
-                    .getLocationInfoFromCoordinates(latitude, longitude)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ response ->
-                        if (response.isSuccessful) {
-                            val resultCity = response.body()?.firstOrNull()
-                            if (resultCity != null) {
-                            /*
-                             * when we have a success search of city name, create a query
-                             * to get current weather from location
-                             */
-                                val location =
-                                    context.getString(
-                                        R.string.format_string_for_city_query,
-                                        resultCity.name,
-                                        resultCity.state,
-                                        resultCity.country,
-                                    )
-                                searchCityWeather(location)
-                            } else {
-                                updateDetailUIState(DetailAppUiState.Error(context.getString(R.string.error_server_error)))
-                            }
-                        }
-                    }, {
-                        it.printStackTrace()
-                        updateDetailUIState(DetailAppUiState.Error(context.getString(R.string.error_server_error)))
-                    })
+            viewModelScope.launch(Dispatchers.IO) {
+                updateDetailUIState(DetailAppUiState.Loading)
+                try {
+                    val result =
+                        repository.getLocationInfoFromCoordinates(
+                            latitude,
+                            longitude,
+                            sp.unitValue,
+                            context,
+                        )
+                    if (result != null) {
+                        updateDetailUIState(
+                            DetailAppUiState.Success(result),
+                        )
+                    } else {
+                        Log.i(TAG, "The result is null")
+                        updateDetailUIState(
+                            DetailAppUiState.Error(
+                                context.getString(R.string.error_no_internet_connection),
+                            ),
+                        )
+                    }
+                } catch (e: WeatherErrorResponse) {
+                    e.printStackTrace()
+                    updateDetailUIState(
+                        DetailAppUiState.Error(
+                            e.message ?: context.getString(R.string.error_not_found_location),
+                        ),
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    updateDetailUIState(
+                        DetailAppUiState.Error(
+                            e.message ?: context.getString(R.string.error_server_error),
+                        ),
+                    )
+                }
             }
         }
 
@@ -208,8 +241,6 @@ class MainActivityViewModel
          * Save the current Weather Search and show when launch the app or when user request it
          */
         private fun saveLastSearch(lastWeatherSearch: CurrentWeatherResponse) {
-            val json = Gson().toJson(lastWeatherSearch)
-            sp.saveSearch(json)
             updateHomeUIState(
                 newHomeAppUiState =
                     HomeAppUiState.LastWeather(
@@ -233,18 +264,64 @@ class MainActivityViewModel
             )
         }
 
+        fun getMostFiveRecentWeatherSearch(context: Context) {
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    updateHistoryUiState(HistoryAppUiState.Loading)
+                    val result = repository.getListOfRecentWeatherSearch()
+                    if (result != null) {
+                        updateHistoryUiState(HistoryAppUiState.LastFive(result))
+                    } else {
+                        updateHistoryUiState(
+                            HistoryAppUiState.Error(
+                                context.getString(R.string.error_local_database),
+                            ),
+                        )
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    updateHistoryUiState(
+                        HistoryAppUiState.Error(
+                            e.message ?: context.getString(R.string.error_local_database),
+                        ),
+                    )
+                }
+            }
+        }
+
+        fun getAllWeatherSearch(context: Context) {
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    updateHistoryUiState(HistoryAppUiState.Loading)
+                    val result = repository.getAllSearchedWeather()
+                    updateHistoryUiState(
+                        HistoryAppUiState.CompleteHistory(result),
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    updateHistoryUiState(
+                        HistoryAppUiState.Error(
+                            e.message ?: context.getString(R.string.error_local_database),
+                        ),
+                    )
+                }
+            }
+        }
+
         /**
          * Update Home UI State and updating the Compose UI
          */
         private fun updateHomeUIState(
             isFromInit: Boolean = _homeScreenUiState.value.isFromInit,
             units: String = _homeScreenUiState.value.units,
+            canShowLastFiveSearch: Boolean = _homeScreenUiState.value.canShowLastFiveSearch,
             newHomeAppUiState: HomeAppUiState = _homeScreenUiState.value.homeAppUiState,
         ) {
             _homeScreenUiState.update { currentState ->
                 currentState.copy(
                     isFromInit = isFromInit,
                     units = units,
+                    canShowLastFiveSearch = canShowLastFiveSearch,
                     homeAppUiState = newHomeAppUiState,
                 )
             }
@@ -255,6 +332,10 @@ class MainActivityViewModel
          */
         private fun updateDetailUIState(newDetailAppUiState: DetailAppUiState) {
             _detailScreenUiState.update { newDetailAppUiState }
+        }
+
+        private fun updateHistoryUiState(newHistoryAppUiState: HistoryAppUiState) {
+            _historyScreenUiState.update { newHistoryAppUiState }
         }
 
         companion object {

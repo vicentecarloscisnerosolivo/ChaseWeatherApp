@@ -6,6 +6,7 @@
     <string name="detail_screen">Detail</string>
     <string name="back_button">Back</string>
     <string name="last_search_screen">Last Search</string>
+    <string name="history_search_screen">History Search</string>
 
     <!-- Toast bar settings -->
     <string name="toast_location_permission_should_request">Should give access to the
@@ -15,9 +16,12 @@
     <string name="button_search_current_location">Search weather with current location</string>
     <string name="label_search_city">Type City or Zip Code</string>
     <string name="button_show_last_search">Show last search</string>
+    <string name="button_show_all_search">Show all search</string>
+    <string name="button_show_five_most_recent_search">Show last Five Search</string>
     <string name="button_search">Search</string>
     <string name="label_select_unit">Select units</string>
     <string name="format_string_for_city_query">%s, %s, %s</string>
+    <string name="label_select_unit_test_tag">Select units test</string>
 
     <!-- Detail Weather Screen Values -->
     <string name="test_tag_loading">Loading Info</string>
@@ -47,12 +51,17 @@
     <string name="label_data_last_search_info">Note: This info is from the Last Search, click on back button to go back main Screen</string>
     <string name="label_data_last_search_button">Go Home Screen</string>
 
+    <!-- History Weather Screen Values -->
+
+
 
     <!-- Error handle -->
     <string name="error_server_error">Error on server side, please try in other moment</string>
     <string name="error_not_found_location">Sorry, we did not find the location, please
     modify the search using Zip Code with country name or City name with state and country</string>
     <string name="error_no_internet_connection">No internet connection, please try to turn on network connections</string>
+
+    <string name="error_local_database">Error on local database</string>
 
     <!-- Radio Button Options List -->
     <string-array name="units_option">

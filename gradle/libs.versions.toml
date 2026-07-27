@@ -27,6 +27,10 @@ runtimeLivedata = "1.7.2"
 archCoreTesting = "2.2.0"
 uiTestJunit4Android = "1.7.2"
 ktlintVersion = "14.2.0"
+roomVersion = "2.6.0"
+apiumVersion = "9.2.0"
+seleniumVersion = "4.21.0"
+kspVersion = "1.9.21-1.0.16"
 
 
 [libraries]
@@ -59,6 +63,7 @@ rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = 
 androidx-lifecycle-reactive-streams = { group = "androidx.lifecycle", name = "lifecycle-reactivestreams", version.ref = "lifecycleRuntimeKtx" }
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidexVersion" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutinesVersion" }
+kotlinx-coroutines-rxjava = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "coroutinesVersion"}
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockitoInlineVersion" }
 mockito-android = { group = "org.mockito", name = "mockito-android", version.ref = "mockitoKotlinVersion" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoKotlinVersion" }
@@ -74,9 +79,15 @@ androidx-datastore-core-android = { group = "androidx.datastore", name = "datast
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-arch-core = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCoreTesting" }
 androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
+apium-java-client = { group = "io.appium", name = "java-client", version.ref = "apiumVersion" }
+selenium = { group = "org.seleniumhq.selenium", name = "selenium-java", version.ref = "seleniumVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
+room = {id = "androidx.room", version.ref = "roomVersion"}
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintVersion" }
+ksp = {id = "com.google.devtools.ksp" , version.ref = "kspVersion"}

@@ -1,11 +1,19 @@
+import java.util.Properties
+
 plugins {
     kotlin("kapt")
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.room)
+    alias(libs.plugins.ksp)
 }
 
+val properties = Properties()
+if (rootProject.file("local.properties").exists()) {
+    properties.load(rootProject.file("local.properties").inputStream())
+}
 android {
     namespace = "com.vcco.weather"
     compileSdk = 34
@@ -23,8 +31,9 @@ android {
         }
 
         buildConfigField("String", "BASE_URL", "\"${project.properties["base_url"]}\"")
-        buildConfigField("String", "API_KEY", "\"${project.properties["api_key"]}\"")
-        buildConfigField("String", "PREFERENCE_FILE", "\"${project.properties["prefence_file"]}\"")
+        buildConfigField("String", "API_KEY", "\"${properties.get("api_key")}\"")
+        buildConfigField("String", "PREFERENCE_FILE", "\"${properties.get("prefence_file")}\"")
+        buildConfigField("String", "APP_DB_NAME", "\"${properties.get("app_db_name")}\"")
     }
 
     buildTypes {
@@ -36,6 +45,11 @@ android {
             )
         }
     }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -92,6 +106,7 @@ dependencies {
     // RXJava
     implementation(libs.rxjava)
     implementation(libs.rxjava.adapter)
+    implementation(libs.kotlinx.coroutines.rxjava)
 
     // RXAndroid
     implementation(libs.rxandroid)
@@ -120,6 +135,10 @@ dependencies {
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.navigation.support.fragments)
 
+    // Room
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+
     // HiltTesting
     androidTestImplementation(libs.dagger.hilt.test)
     kaptAndroidTest(libs.dagger.hilt.compilation)
@@ -137,6 +156,10 @@ dependencies {
     androidTestImplementation(libs.mockito.android)
     testImplementation(libs.androidx.test)
     androidTestImplementation(libs.androidx.arch.core)
+
+    // Selenium testing
+    testImplementation(libs.apium.java.client)
+    testImplementation(libs.selenium)
 }
 
 kapt {
