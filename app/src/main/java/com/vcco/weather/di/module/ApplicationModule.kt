@@ -1,8 +1,10 @@
 package com.vcco.weather.di.module
 
 import android.content.Context
+import androidx.room.Room
 import com.vcco.weather.BuildConfig
 import com.vcco.weather.data.Preference
+import com.vcco.weather.db.AppDatabase
 import com.vcco.weather.network.service.OpenWeatherService
 import dagger.Module
 import dagger.Provides
@@ -71,4 +73,20 @@ object ApplicationModule {
         @ApplicationContext
         context: Context,
     ) = Preference(context)
+
+    @Provides
+    @Singleton
+    fun providesDB(
+        @ApplicationContext
+        context: Context,
+    ) = Room
+        .databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            BuildConfig.APP_DB_NAME,
+        ).build()
+
+    @Provides
+    @Singleton
+    fun provideDAO(db: AppDatabase) = db.weatherDao()
 }

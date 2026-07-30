@@ -200,7 +200,7 @@ fun DetailWeatherScreen(
                             .padding(dimensionResource(R.dimen.padding_16dp)),
                 )
                 Row(
-                    modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 ) {
                     Text(
                         text =

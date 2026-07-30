@@ -9,4 +9,5 @@ enum class WeatherScreen(
     Home(screenTitle = R.string.home_screen),
     Detail(screenTitle = R.string.detail_screen),
     LastSearch(screenTitle = R.string.last_search_screen),
+    HistorySearch(screenTitle = R.string.history_search_screen),
 }

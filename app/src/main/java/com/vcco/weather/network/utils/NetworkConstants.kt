@@ -20,5 +20,8 @@ internal object NetworkConstants {
     // Reverse Geocode Params
     const val LATITUDE = "lat"
     const val LONGITUDE = "lon"
+
+    // errors
     const val NOT_FOUND = "not found"
+    const val NOT_FOUND_CODE = 404
 }

@@ -6,6 +6,7 @@ import com.vcco.weather.model.weather.CurrentWeatherResponse
 data class HomeUiState(
     val isFromInit: Boolean = false,
     val units: String = PreferencesConstants.DEFAULT_UNIT,
+    val canShowLastFiveSearch: Boolean = false,
     val homeAppUiState: HomeAppUiState,
 )
 
