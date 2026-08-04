@@ -211,6 +211,7 @@ class MainActivityViewModel
                         updateDetailUIState(
                             DetailAppUiState.Success(result),
                         )
+                        saveLastSearch(result)
                     } else {
                         Log.i(TAG, "The result is null")
                         updateDetailUIState(
