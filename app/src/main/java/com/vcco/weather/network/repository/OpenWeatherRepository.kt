@@ -4,23 +4,16 @@ import android.content.Context
 import android.util.Log
 import com.vcco.weather.R
 import com.vcco.weather.db.dao.WeatherDao
-import com.vcco.weather.db.model.CurrentWeather
+import com.vcco.weather.db.relations.CurrentWeatherWithDetails
 import com.vcco.weather.model.errors.WeatherErrorResponse
-import com.vcco.weather.model.weather.Clouds
-import com.vcco.weather.model.weather.Conditions
-import com.vcco.weather.model.weather.Coordinates
 import com.vcco.weather.model.weather.CurrentWeatherResponse
-import com.vcco.weather.model.weather.Rain
-import com.vcco.weather.model.weather.Snow
-import com.vcco.weather.model.weather.SunTime
-import com.vcco.weather.model.weather.Temperature
-import com.vcco.weather.model.weather.Wind
 import com.vcco.weather.network.apiHelper.OpenWeatherApiHelper
 import com.vcco.weather.network.utils.NetworkConstants
 import com.vcco.weather.network.utils.toConditions
 import com.vcco.weather.network.utils.toCoordinates
 import com.vcco.weather.network.utils.toCurrentClouds
 import com.vcco.weather.network.utils.toCurrentWeather
+import com.vcco.weather.network.utils.toCurrentWeatherResponse
 import com.vcco.weather.network.utils.toRain
 import com.vcco.weather.network.utils.toSnow
 import com.vcco.weather.network.utils.toSunTime
@@ -40,7 +33,7 @@ class OpenWeatherRepository
         private val helper: OpenWeatherApiHelper,
         private val dao: WeatherDao,
     ) {
-        private lateinit var listOfSearchedWeather: MutableList<CurrentWeather>
+        private lateinit var listOfSearchedWeather: MutableList<CurrentWeatherWithDetails>
 
         fun populateData() {
             listOfSearchedWeather = dao.getLastWeatherSearch()
@@ -61,7 +54,7 @@ class OpenWeatherRepository
                         val parentId =
                             dao.insertNewWeatherAndRemoveOld(
                                 currentWeather = currentWeather,
-                                deactivateWeather = deactivateWeather,
+                                deactivateWeather = deactivateWeather?.currentWeather,
                                 clouds = it.toCurrentClouds(),
                                 conditions = it.toConditions(),
                                 coordinates = it.toCoordinates(),
@@ -73,9 +66,8 @@ class OpenWeatherRepository
                             )
 
                         switchWeathers(
-                            currentWeather = currentWeather,
+                            currentWeatherId = parentId,
                             deactivateWeather = deactivateWeather,
-                            parentId = parentId,
                         )
                         return it
                     }
@@ -197,208 +189,42 @@ class OpenWeatherRepository
 
         fun getMostRecentWeatherSearch(): CurrentWeatherResponse? {
             val lastWeather = dao.getLastWeatherSearched()
-            lastWeather?.let { currentWeather ->
-                val clouds = dao.getCloudsForWeather(currentWeather.uId)
-                val coordinates = dao.getCoordinatesForWeather(currentWeather.uId)
-                val conditions = dao.getConditionForWeather(currentWeather.uId)
-                val rain = dao.getRainForWeather(currentWeather.uId)
-                val snow = dao.getSnowForWeather(currentWeather.uId)
-                val sunTime = dao.getSunTimeForWeather(currentWeather.uId)
-                val temperature = dao.getTemperatureForWeather(currentWeather.uId)
-                val wind = dao.getWindForWeather(currentWeather.uId)
 
-                return CurrentWeatherResponse(
-                    coordinates =
-                        Coordinates(
-                            longitude = coordinates.longitude,
-                            latitude = coordinates.latitude,
-                        ),
-                    conditions =
-                        conditions.map {
-                            Conditions(
-                                id = it.id,
-                                condition = it.condition,
-                                description = it.description,
-                                icon = it.icon,
-                            )
-                        },
-                    temperature =
-                        Temperature(
-                            temperature = temperature.temperature,
-                            feelsLike = temperature.feelsLike,
-                            minTemperature = temperature.minTemperature,
-                            maxTemperature = temperature.maxTemperature,
-                            humidity = temperature.humidity,
-                        ),
-                    visibility = currentWeather.visibility,
-                    wind =
-                        Wind(
-                            speed = wind.speed,
-                            direction = wind.direction,
-                        ),
-                    clouds =
-                        Clouds(
-                            coverage = clouds.coverage,
-                        ),
-                    rain = if (rain == null) null else Rain(amount = rain.amount),
-                    snow = if (snow == null) null else Snow(amount = snow.amount),
-                    dataCalculation = currentWeather.dataCalculation,
-                    sunTime =
-                        SunTime(
-                            country = sunTime.country,
-                            sunRiseTimestamp = sunTime.sunRiseTimestamp,
-                            sunSetTimestamp = sunTime.sunSetTimestamp,
-                        ),
-                    timeZone = currentWeather.timeZone,
-                    id = currentWeather.id,
-                    name = currentWeather.name,
-                )
-            }
-            return null
+            return lastWeather?.toCurrentWeatherResponse()
         }
 
         fun getDeactivateWeather() = if (listOfSearchedWeather.size == 5) listOfSearchedWeather[4] else null
 
         fun switchWeathers(
-            currentWeather: CurrentWeather,
-            deactivateWeather: CurrentWeather?,
-            parentId: Long,
+            currentWeatherId: Long,
+            deactivateWeather: CurrentWeatherWithDetails?,
         ) {
-            listOfSearchedWeather.add(element = currentWeather.copy(uId = parentId), index = 0)
+            val currentWeather = dao.getCurrentWeatherWithDetails(currentWeatherId)
+            listOfSearchedWeather.add(element = currentWeather, index = 0)
             deactivateWeather?.let {
-                dao.deactivateWeather(deactivateWeather)
+                dao.deactivateWeather(deactivateWeather.currentWeather)
                 listOfSearchedWeather.remove(deactivateWeather)
             }
+//            Log.i(TAG, "Updating list size")
+//            for (index in 5..<listOfSearchedWeather.size){
+//                dao.deactivateWeather(listOfSearchedWeather[index].currentWeather.copy(isActive = false))
+//                Log.i(TAG, "value updated")
+//            }
         }
 
         fun getListOfRecentWeatherSearch() =
-            if (listOfSearchedWeather.size >= 5) {
+            if (listOfSearchedWeather.size == 5) {
                 listOfSearchedWeather.toList().map { currentWeather ->
-                    CurrentWeatherResponse(
-                        coordinates =
-                            dao
-                                .getCoordinatesForWeather(currentWeather.uId)
-                                .let { Coordinates(longitude = it.longitude, latitude = it.latitude) },
-                        conditions =
-                            dao.getConditionForWeather(currentWeather.uId).let { conditions ->
-                                conditions.map {
-                                    Conditions(
-                                        id = it.id,
-                                        condition = it.condition,
-                                        description = it.description,
-                                        icon = it.icon,
-                                    )
-                                }
-                            },
-                        temperature =
-                            dao.getTemperatureForWeather(currentWeather.uId).let {
-                                Temperature(
-                                    temperature = it.temperature,
-                                    feelsLike = it.feelsLike,
-                                    minTemperature = it.minTemperature,
-                                    maxTemperature = it.maxTemperature,
-                                    humidity = it.humidity,
-                                )
-                            },
-                        visibility = currentWeather.visibility,
-                        wind =
-                            dao.getWindForWeather(currentWeather.uId).let {
-                                Wind(
-                                    speed = it.speed,
-                                    direction = it.direction,
-                                )
-                            },
-                        clouds =
-                            dao.getCloudsForWeather(currentWeather.uId).let {
-                                Clouds(coverage = it.coverage)
-                            },
-                        rain =
-                            dao.getRainForWeather(currentWeather.uId)?.let {
-                                Rain(amount = it.amount)
-                            },
-                        snow =
-                            dao.getSnowForWeather(currentWeather.uId)?.let {
-                                Snow(amount = it.amount)
-                            },
-                        dataCalculation = currentWeather.dataCalculation,
-                        sunTime =
-                            dao.getSunTimeForWeather(currentWeather.uId).let {
-                                SunTime(
-                                    country = it.country,
-                                    sunRiseTimestamp = it.sunRiseTimestamp,
-                                    sunSetTimestamp = it.sunSetTimestamp,
-                                )
-                            },
-                        timeZone = currentWeather.timeZone,
-                        name = currentWeather.name,
-                        id = currentWeather.id,
-                    )
+                    currentWeather.toCurrentWeatherResponse()
                 }
             } else {
+                Log.i(TAG, "The recente search size is ${listOfSearchedWeather.size}")
                 null
             }
 
         fun getAllSearchedWeather() =
-            dao.getAllWeatherSearched().toList().map { currentWeather ->
-                CurrentWeatherResponse(
-                    coordinates =
-                        dao
-                            .getCoordinatesForWeather(currentWeather.uId)
-                            .let { Coordinates(longitude = it.longitude, latitude = it.latitude) },
-                    conditions =
-                        dao.getConditionForWeather(currentWeather.uId).let { conditions ->
-                            conditions.map {
-                                Conditions(
-                                    id = it.id,
-                                    condition = it.condition,
-                                    description = it.description,
-                                    icon = it.icon,
-                                )
-                            }
-                        },
-                    temperature =
-                        dao.getTemperatureForWeather(currentWeather.uId).let {
-                            Temperature(
-                                temperature = it.temperature,
-                                feelsLike = it.feelsLike,
-                                minTemperature = it.minTemperature,
-                                maxTemperature = it.maxTemperature,
-                                humidity = it.humidity,
-                            )
-                        },
-                    visibility = currentWeather.visibility,
-                    wind =
-                        dao.getWindForWeather(currentWeather.uId).let {
-                            Wind(
-                                speed = it.speed,
-                                direction = it.direction,
-                            )
-                        },
-                    clouds =
-                        dao.getCloudsForWeather(currentWeather.uId).let {
-                            Clouds(coverage = it.coverage)
-                        },
-                    rain =
-                        dao.getRainForWeather(currentWeather.uId)?.let {
-                            Rain(amount = it.amount)
-                        },
-                    snow =
-                        dao.getSnowForWeather(currentWeather.uId)?.let {
-                            Snow(amount = it.amount)
-                        },
-                    dataCalculation = currentWeather.dataCalculation,
-                    sunTime =
-                        dao.getSunTimeForWeather(currentWeather.uId).let {
-                            SunTime(
-                                country = it.country,
-                                sunRiseTimestamp = it.sunRiseTimestamp,
-                                sunSetTimestamp = it.sunSetTimestamp,
-                            )
-                        },
-                    timeZone = currentWeather.timeZone,
-                    name = currentWeather.name,
-                    id = currentWeather.id,
-                )
+            dao.getAllWeathersWithRelations().map { currentWeather ->
+                currentWeather.toCurrentWeatherResponse()
             }
 
         companion object {
