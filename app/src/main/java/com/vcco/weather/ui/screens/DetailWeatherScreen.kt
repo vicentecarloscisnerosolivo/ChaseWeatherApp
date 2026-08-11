@@ -232,17 +232,39 @@ fun DetailWeatherScreen(
                     )
                 }
             }
+            currentWeatherResponse.temperature.pressure?.let {
+                Text(
+                    text =
+                        stringResource(
+                            R.string.label_current_pressure,
+                            it,
+                        ),
+                    modifier =
+                        Modifier
+                            .align(alignment = Alignment.CenterHorizontally),
+                )
+            }
+            val humidityModifier = if (currentWeatherResponse.temperature.pressure == null)
+                Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(dimensionResource(R.dimen.padding_16dp))
+            else {
+                Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(bottom = dimensionResource(R.dimen.padding_16dp),
+                        start = dimensionResource(R.dimen.padding_16dp),
+                        end = dimensionResource(R.dimen.padding_16dp))
+            }
+
             Text(
                 text =
                     stringResource(
                         R.string.label_current_humidity,
                         currentWeatherResponse.temperature.humidity,
                     ),
-                modifier =
-                    Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
-                        .padding(dimensionResource(R.dimen.padding_16dp)),
+                modifier = humidityModifier,
             )
+
             Text(
                 text =
                     stringResource(
@@ -302,22 +324,20 @@ fun DetailWeatherScreen(
                             ),
                         modifier = Modifier,
                     )
-                    val direction = currentWeatherResponse.wind.direction
-                    val windDirection =
-                        when (direction) {
-                            in 23..66 -> R.string.label_current_wind_north_east
-                            in 67..111 -> R.string.label_current_wind_east
-                            in 112..156 -> R.string.label_current_wind_south_east
-                            in 157..202 -> R.string.label_current_wind_south
-                            in 203..247 -> R.string.label_current_wind_south_west
-                            in 248..291 -> R.string.label_current_wind_west
-                            in 292..337 -> R.string.label_current_wind_north_west
-                            else -> R.string.label_current_wind_north
-                        }
+
                     Text(
-                        text = stringResource(windDirection),
+                        text = stringResource(windDirection(currentWeatherResponse.wind.direction)),
                         modifier = Modifier,
                     )
+                    currentWeatherResponse.wind.gust?.let {
+                        Text(
+                            text = stringResource(
+                                R.string.label_current_wind_gust,
+                                it
+                            ),
+                            modifier = Modifier,
+                        )
+                    }
                 }
                 Column(
                     modifier = Modifier.weight(1f),
@@ -383,6 +403,18 @@ private fun convertURLToDrawableId(url: String): Int =
         else -> R.drawable.ic_50n
     }
 
+private fun windDirection(direction: Int) =
+    when (direction) {
+        in 23..66 -> R.string.label_current_wind_north_east
+        in 67..111 -> R.string.label_current_wind_east
+        in 112..156 -> R.string.label_current_wind_south_east
+        in 157..202 -> R.string.label_current_wind_south
+        in 203..247 -> R.string.label_current_wind_south_west
+        in 248..291 -> R.string.label_current_wind_west
+        in 292..337 -> R.string.label_current_wind_north_west
+        else -> R.string.label_current_wind_north
+    }
+
 @Preview(
     showBackground = true,
     showSystemUi = true,
@@ -427,6 +459,7 @@ fun DetailWeatherScreenPreview() {
                             icon = "01d",
                         ),
                     ),
+                base = "",
                 temperature =
                     Temperature(
                         temperature = 90f,
@@ -434,12 +467,16 @@ fun DetailWeatherScreenPreview() {
                         minTemperature = 68f,
                         maxTemperature = 95f,
                         humidity = 60,
+                        pressure = 1012,
+                        seaLevel = 1012,
+                        groundLevel = 764,
                     ),
                 visibility = 10000,
                 wind =
                     Wind(
                         speed = 12.4f,
                         direction = 2,
+                        gust = 14.4f,
                     ),
                 clouds = Clouds(coverage = 10),
                 rain = Rain(amount = 2.5f),

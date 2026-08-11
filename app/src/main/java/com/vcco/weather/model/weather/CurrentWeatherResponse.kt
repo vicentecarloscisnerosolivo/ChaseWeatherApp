@@ -13,6 +13,7 @@ data class CurrentWeatherResponse(
     val coordinates: Coordinates,
     @SerializedName(Constants.CURRENT_WEATHER_CONDITIONS_RESPONSE)
     val conditions: List<Conditions>,
+    val base: String? = null,
     @SerializedName(Constants.CURRENT_WEATHER_TEMPERATURE_RESPONSE)
     val temperature: Temperature,
     @SerializedName(Constants.CURRENT_WEATHER_VISIBILITY_RESPONSE)

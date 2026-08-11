@@ -25,4 +25,9 @@ data class Temperature(
     @SerializedName(Constants.CURRENT_MAX_TEMPERATURE_RESPONSE)
     val maxTemperature: Float,
     val humidity: Int,
+    val pressure: Int? = null,
+    @SerializedName(Constants.CURRENT_SEA_LEVEL_RESPONSE)
+    val seaLevel: Int? = null,
+    @SerializedName(Constants.CURRENT_GROUND_LEVEL_RESPONSE)
+    val groundLevel: Int? = null,
 )

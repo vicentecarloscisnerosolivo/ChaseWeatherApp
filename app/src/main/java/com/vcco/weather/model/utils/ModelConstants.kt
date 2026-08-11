@@ -18,6 +18,8 @@ internal object ModelConstants {
     const val CURRENT_HUMIDITY_RESPONSE = "humidity"
     const val CURRENT_MAX_TEMPERATURE_RESPONSE = "temp_max"
     const val CURRENT_MIN_TEMPERATURE_RESPONSE = "temp_min"
+    const val CURRENT_SEA_LEVEL_RESPONSE = "sea_level"
+    const val CURRENT_GROUND_LEVEL_RESPONSE = "grnd_level"
 
     // Wind Response
     const val WIND_SPEED_RESPONSE = "speed"
@@ -50,6 +52,7 @@ internal object ModelConstants {
     const val CURRENT_WEATHER_TIME_ZONE_RESPONSE = "timezone"
     const val CURRENT_WEATHER_ID_RESPONSE = "id"
     const val CURRENT_WEATHER_NAME_RESPONSE = "name"
+    const val CURRENT_WEATHER_CODE_RESPONSE = "code"
 
     // Geocode Response
     const val GEOCODE_LOCAL_NAMES_RESPONSE = "local_names"

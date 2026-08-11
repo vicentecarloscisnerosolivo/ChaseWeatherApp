@@ -19,4 +19,7 @@ data class Temperature(
     val minTemperature: Float,
     val maxTemperature: Float,
     val humidity: Int,
+    val pressure: Int? = null,
+    val seaLevel: Int? = null,
+    val groundLevel: Int? = null,
 )

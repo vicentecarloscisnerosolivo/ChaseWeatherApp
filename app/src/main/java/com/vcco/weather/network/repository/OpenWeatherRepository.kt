@@ -187,11 +187,7 @@ class OpenWeatherRepository
          * get mostRecentWeather searched from Db
          */
 
-        fun getMostRecentWeatherSearch(): CurrentWeatherResponse? {
-            val lastWeather = dao.getLastWeatherSearched()
-
-            return lastWeather?.toCurrentWeatherResponse()
-        }
+        fun getMostRecentWeatherSearch() = dao.getLastWeatherSearched()?.toCurrentWeatherResponse()
 
         fun getDeactivateWeather() = if (listOfSearchedWeather.size == 5) listOfSearchedWeather[4] else null
 
@@ -202,14 +198,9 @@ class OpenWeatherRepository
             val currentWeather = dao.getCurrentWeatherWithDetails(currentWeatherId)
             listOfSearchedWeather.add(element = currentWeather, index = 0)
             deactivateWeather?.let {
-                dao.deactivateWeather(deactivateWeather.currentWeather)
+                dao.deactivateWeather(deactivateWeather.currentWeather.copy(isActive = false))
                 listOfSearchedWeather.remove(deactivateWeather)
             }
-//            Log.i(TAG, "Updating list size")
-//            for (index in 5..<listOfSearchedWeather.size){
-//                dao.deactivateWeather(listOfSearchedWeather[index].currentWeather.copy(isActive = false))
-//                Log.i(TAG, "value updated")
-//            }
         }
 
         fun getListOfRecentWeatherSearch() =
@@ -218,7 +209,7 @@ class OpenWeatherRepository
                     currentWeather.toCurrentWeatherResponse()
                 }
             } else {
-                Log.i(TAG, "The recente search size is ${listOfSearchedWeather.size}")
+                Log.i(TAG, "The recent search size is ${listOfSearchedWeather.size}")
                 null
             }
 

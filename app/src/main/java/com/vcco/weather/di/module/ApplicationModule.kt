@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.vcco.weather.BuildConfig
 import com.vcco.weather.data.Preference
 import com.vcco.weather.db.AppDatabase
+import com.vcco.weather.db.MIGRATION_1_2
 import com.vcco.weather.network.service.OpenWeatherService
 import dagger.Module
 import dagger.Provides
@@ -84,7 +85,9 @@ object ApplicationModule {
             context,
             AppDatabase::class.java,
             BuildConfig.APP_DB_NAME,
-        ).build()
+        )
+        .addMigrations(MIGRATION_1_2)
+        .build()
 
     @Provides
     @Singleton

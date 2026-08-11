@@ -13,4 +13,5 @@ data class Wind(
     val parentId: Long = 0,
     val speed: Float,
     val direction: Int,
+    val gust: Float? = null,
 )

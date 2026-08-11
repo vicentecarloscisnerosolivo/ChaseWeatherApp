@@ -31,12 +31,14 @@
     <string name="label_temperature_min">Min: %d°</string>
     <string name="label_temperature_max">Max: %d°</string>
     <string name="label_current_humidity">Humidity: %d\%%</string>
+    <string name="label_current_pressure">Pressure: %d</string>
     <string name="label_cloud_coverage">Cloud Coverage: %d\%%</string>
     <string name="label_current_no_precipitations">No precipitations expected in the next 60 minutes</string>
     <string name="label_current_rain_expected">Expected rain %.2fmm in the next 60 minutes</string>
     <string name="label_current_snow_expected">Expected snow %.2fmm in the next 60 minutes\%%</string>
     <string name="label_current_wind">Wind Conditions</string>
     <string name="label_current_wind_speed">Speed: %.2f</string>
+    <string name="label_current_wind_gust">Gust: %.2f</string>
     <string name="label_current_wind_north">Direction North</string>
     <string name="label_current_wind_north_east">Direction North East</string>
     <string name="label_current_wind_north_west">Direction North West</string>

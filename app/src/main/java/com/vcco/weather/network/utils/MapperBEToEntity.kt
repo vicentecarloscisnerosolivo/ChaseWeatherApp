@@ -13,6 +13,7 @@ import com.vcco.weather.model.weather.CurrentWeatherResponse
 
 fun CurrentWeatherResponse.toCurrentWeather() =
     CurrentWeather(
+        base = base,
         visibility = visibility,
         dataCalculation = dataCalculation,
         timeZone = timeZone,
@@ -69,10 +70,14 @@ fun CurrentWeatherResponse.toTemperature() =
         minTemperature = temperature.minTemperature,
         maxTemperature = temperature.maxTemperature,
         humidity = temperature.humidity,
+        pressure = temperature.pressure,
+        seaLevel = temperature.seaLevel,
+        groundLevel = temperature.groundLevel,
     )
 
 fun CurrentWeatherResponse.toWind() =
     Wind(
         speed = wind.speed,
         direction = wind.direction,
+        gust = wind.gust,
     )

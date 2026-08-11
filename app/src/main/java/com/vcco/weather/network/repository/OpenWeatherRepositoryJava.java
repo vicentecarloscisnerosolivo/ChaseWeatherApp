@@ -174,6 +174,7 @@ public class OpenWeatherRepositoryJava {
         return new CurrentWeather(
                 0,
                 currentWeather.getVisibility(),
+                currentWeather.getBase(),
                 currentWeather.getDataCalculation(),
                 currentWeather.getTimeZone(),
                 currentWeather.getId(),
@@ -252,7 +253,10 @@ public class OpenWeatherRepositoryJava {
                 temperature.getFeelsLike(),
                 temperature.getMinTemperature(),
                 temperature.getMaxTemperature(),
-                temperature.getHumidity()
+                temperature.getHumidity(),
+                temperature.getPressure(),
+                temperature.getSeaLevel(),
+                temperature.getGroundLevel()
         );
     }
 
@@ -261,7 +265,8 @@ public class OpenWeatherRepositoryJava {
                 0,
                 0,
                 wind.getSpeed(),
-                wind.getDirection()
+                wind.getDirection(),
+                wind.getGust()
         );
     }
 }

@@ -8,6 +8,7 @@ data class CurrentWeather(
     @PrimaryKey(autoGenerate = true)
     val uId: Long = 0,
     val visibility: Int,
+    val base: String? = null,
     val dataCalculation: Long,
     val timeZone: Long,
     val id: Int,
